@@ -11,11 +11,8 @@ class LandingController extends GetxController {
   final List<Widget> pages = [
     HomeView(),
     Center(
-      child: Text("coba"),
+      child: Text("List Penyakit"),
     ),
-    Center(
-      child: Text("coba2"),
-    )
   ];
   void onChangePage(int val) {
     index.value = val;

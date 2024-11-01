@@ -63,22 +63,11 @@ class LandingView extends GetView<LandingController> {
                           GestureDetector(
                             onTap: () => controller.onChangePage(1),
                             child: NavbarItem(
-                              active: "assets/icons/arrythmia-icon-active.png",
-                              inactive:
-                                  "assets/icons/arrythmia-icon-inactive.png",
-                              status: controller.index.value == 1,
-                              label: "Arrythmia",
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: () => controller.onChangePage(2),
-                            child: NavbarItem(
                               active: "assets/icons/myocardial-icon-active.png",
                               inactive:
                                   "assets/icons/myocardial-icon-inactive.png",
-                              status: controller.index.value == 2,
-                              label: "Myocardial",
+                              status: controller.index.value == 1,
+                              label: "Penyakit",
                             ),
                           ),
                         ],

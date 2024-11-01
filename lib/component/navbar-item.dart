@@ -27,7 +27,7 @@ class NavbarItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min, // Allow the Row to take minimum space
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             height: 50,
             width: 40,
             child: Image.asset(

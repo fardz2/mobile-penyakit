@@ -7,7 +7,7 @@ import 'package:heartrate_database_u_i/utils/colors.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
-  HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,10 @@ class HomeView extends GetView<HomeController> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Good Morning"),
-                                  Text("Belva"),
+                                  Text("Belva",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      )),
                                 ],
                               ),
                             ],
