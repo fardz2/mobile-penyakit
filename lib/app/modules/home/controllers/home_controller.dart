@@ -6,7 +6,7 @@ class HomeController extends GetxController {
   final List<Map<String, dynamic>> itemsArrythmia = [
     {
       'title': 'Penyebab Arrythmia',
-      'icon': 'assets/icons/Medical-Documentation.png',
+      'icon': 'assets/icons/svg/Subtract.svg',
       "items": [
         'Masalah pada sistem listrik jantung',
         'Penyakit jantung',
@@ -17,7 +17,7 @@ class HomeController extends GetxController {
     },
     {
       'title': 'Gejala Arrythmia',
-      'icon': 'assets/icons/DNA.png',
+      'icon': 'assets/icons/svg/DNA.svg',
       "items": [
         'Jantung berdebar',
         'Detak jantung terasa cepat atau lambat',
@@ -27,7 +27,7 @@ class HomeController extends GetxController {
     },
     {
       'title': 'Pencegahan Arrythmia',
-      'icon': 'assets/icons/Mask.png',
+      'icon': 'assets/icons/svg/Mask.svg',
       "items": [
         'Menjalani gaya hidup sehat',
         'Mengelola stress dengan baik',
@@ -37,7 +37,7 @@ class HomeController extends GetxController {
     },
     {
       'title': 'Pengobatan Arrythmia',
-      'icon': 'assets/icons/Vector.png',
+      'icon': 'assets/icons/svg/Pill.svg',
       "items": [
         'Obat ntuk mengendalikan detak jantung',
         'Ablasi kateter untuk menghancurkan jaringan penyebab aritmia',
@@ -47,7 +47,7 @@ class HomeController extends GetxController {
     },
     {
       'title': 'Dampak Arrythmia',
-      'icon': 'assets/icons/Smartwatch-Heart.png',
+      'icon': 'assets/icons/svg/Smartwatch-Heart.svg',
       "items": [
         'Kecemasan dan depresi terkait kondisi jantung',
         'Pembatasan aktivitas fisik',
@@ -58,7 +58,7 @@ class HomeController extends GetxController {
     },
     {
       'title': 'Diagnosis Arrytmia',
-      'icon': 'assets/icons/Microscope.png',
+      'icon': 'assets/icons/svg/Microscope.svg',
       "items": [
         'Diagnosis aritmia biasanya dilakukan melalui Elektrokardiogram (EKG), Holter monitor, atau tes stress jantung. Pengobatan dapat meliputi obat-obatan, ablasi kateter, atau pemasangan alat pacu jantung, tergantung pada jenis dan tingkat keparahan aritmia.',
       ],
@@ -67,7 +67,7 @@ class HomeController extends GetxController {
   final List<Map<String, dynamic>> itemsMyocardial = [
     {
       'title': 'Penyebab Myocardial',
-      'icon': 'assets/icons/Medical-Documentation.png',
+      'icon': 'assets/icons/svg/Subtract.svg',
       "items": [
         'Penumpukan plak di arteri koroner (aterosklerosis)',
         'Pembekuan darah yang menyumbat arteri',
@@ -77,7 +77,7 @@ class HomeController extends GetxController {
     },
     {
       'title': 'Gejala Myocardial',
-      'icon': 'assets/icons/DNA.png',
+      'icon': 'assets/icons/svg/DNA.svg',
       "items": [
         'Nyeri dada atau rasa tidak nyaman',
         'Nyeri yang menyebar ke lengan, leher, rahang, punggung, atau perut',
@@ -86,7 +86,7 @@ class HomeController extends GetxController {
     },
     {
       'title': 'Pencegahan Myocardial',
-      'icon': 'assets/icons/Mask.png',
+      'icon': 'assets/icons/svg/Mask.svg',
       "items": [
         'Berhenti merokok dan mengelola stres',
         'Menjaga berat badan ideal dan olahraga teratur',
@@ -96,7 +96,7 @@ class HomeController extends GetxController {
     },
     {
       'title': 'Pengobatan Myocardial',
-      'icon': 'assets/icons/Pill.png',
+      'icon': 'assets/icons/svg/Pill.svg',
       "items": [
         'Obat-obatan: antiplatelet, penghambat beta, pengencer darah',
         'Angioplasti dan pemasangan stent',
@@ -105,7 +105,7 @@ class HomeController extends GetxController {
     },
     {
       'title': 'Dampak Myocardial',
-      'icon': 'assets/icons/Smartwatch-Heart.png',
+      'icon': 'assets/icons/svg/Smartwatch-Heart.svg',
       "items": [
         'Perubahan dalam kemampuan fisik',
         'Penyesuaian gaya hidup yang signifikan',
@@ -115,7 +115,7 @@ class HomeController extends GetxController {
     },
     {
       'title': 'Diagnosis Myocardial',
-      'icon': 'assets/icons/Microscope.png',
+      'icon': 'assets/icons/svg/Microscope.svg',
       "items": [
         'Diagnosis Myocardial Infarction melibatkan pemeriksaan fisik, EKG, tes darah untuk enzim troponin, dan pencitraan jantung untuk memeriksa aliran darah dan keparahan serangan.',
       ],

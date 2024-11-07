@@ -7,6 +7,9 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/opening/bindings/opening_binding.dart';
 import '../modules/opening/views/opening_view.dart';
+import '../modules/penyakit/views/penyakit_view.dart';
+import '../modules/profile/bindings/profile_binding.dart';
+import '../modules/profile/views/profile_view.dart';
 
 part 'app_routes.dart';
 
@@ -34,6 +37,15 @@ class AppPages {
       name: _Paths.LANDING,
       page: () => const LandingView(),
       binding: LandingBinding(),
+    ),
+    GetPage(
+      name: _Paths.PENYAKIT,
+      page: () => const PenyakitView(),
+    ),
+    GetPage(
+      name: _Paths.PROFILE,
+      page: () => const ProfileView(),
+      binding: ProfileBinding(),
     ),
   ];
 }

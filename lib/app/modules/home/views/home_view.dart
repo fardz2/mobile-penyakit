@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
 import 'package:heartrate_database_u_i/component/about_widget.dart';
 import 'package:heartrate_database_u_i/component/bullet-card.dart';
 import 'package:heartrate_database_u_i/utils/colors.dart';
@@ -31,44 +33,49 @@ class HomeView extends GetView<HomeController> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundImage: AssetImage(
-                                  "assets/images/doctor_streamline.png",
+                          GestureDetector(
+                            onTap: () {
+                              Get.toNamed(Routes.PROFILE);
+                            },
+                            child: const Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 20,
+                                  backgroundImage: AssetImage(
+                                    "assets/images/doctor_streamline.png",
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Good Morning"),
-                                  Text("Belva",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: 40,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Good Morning"),
+                                    Text("Belva",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  ],
                                 ),
-                                padding: EdgeInsets.zero,
-                                shadowColor: Colors.transparent,
-                              ),
-                              onPressed: () {},
-                              child: Center(
-                                child: Image.asset('assets/icons/notif.png'),
-                              ),
+                              ],
                             ),
                           ),
+                          // SizedBox(
+                          //   width: 40,
+                          //   child: ElevatedButton(
+                          //     style: ElevatedButton.styleFrom(
+                          //       backgroundColor: Colors.white,
+                          //       shape: RoundedRectangleBorder(
+                          //         borderRadius: BorderRadius.circular(10),
+                          //       ),
+                          //       padding: EdgeInsets.zero,
+                          //       shadowColor: Colors.transparent,
+                          //     ),
+                          //     onPressed: () {},
+                          //     child: Center(
+                          //       child: Image.asset('assets/icons/notif.png'),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                       const SizedBox(height: 30),
@@ -89,10 +96,7 @@ class HomeView extends GetView<HomeController> {
                                 controller.about.value = "arrythmia";
                               },
                               child: AboutWidget(
-                                active:
-                                    "assets/icons/arrythmia-icon-active.png",
-                                inactive:
-                                    "assets/icons/arrythmia-icon-inactive.png",
+                                active: "assets/icons/svg/arrytmia.svg",
                                 status: controller.about.value == "arrythmia",
                                 label: "About Arrythmia",
                               ),
@@ -103,10 +107,7 @@ class HomeView extends GetView<HomeController> {
                                 controller.about.value = "myocardial";
                               },
                               child: AboutWidget(
-                                active:
-                                    "assets/icons/myocardial-icon-active.png",
-                                inactive:
-                                    "assets/icons/myocardial-icon-inactive.png",
+                                active: "assets/icons/svg/penyakit.svg",
                                 status: controller.about.value == "myocardial",
                                 label: "About Myocardial",
                               ),
@@ -125,8 +126,7 @@ class HomeView extends GetView<HomeController> {
                       ? ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: controller
-                              .itemsArrythmia.length, // Ganti dengan items
+                          itemCount: controller.itemsArrythmia.length,
                           itemBuilder: (context, index) {
                             return BulletListCard(
                               icon: controller.itemsArrythmia[index]["icon"],
@@ -139,8 +139,7 @@ class HomeView extends GetView<HomeController> {
                       : ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: controller
-                              .itemsMyocardial.length, // Ganti dengan items
+                          itemCount: controller.itemsMyocardial.length,
                           itemBuilder: (context, index) {
                             return BulletListCard(
                               icon: controller.itemsMyocardial[index]["icon"],

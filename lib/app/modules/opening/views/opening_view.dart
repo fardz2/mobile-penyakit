@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/utils/colors.dart';
@@ -72,10 +73,10 @@ class OpeningView extends GetView<OpeningController> {
                       ),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Image.asset(
-                          "assets/icons/arrow.png",
-                          width: 35,
-                          height: 30,
+                        child: SvgPicture.asset(
+                          "assets/icons/svg/arrow.svg",
+                          width: 18,
+                          height: 18,
                           fit: BoxFit.contain,
                         ),
                       ),

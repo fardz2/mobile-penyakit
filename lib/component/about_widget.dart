@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:heartrate_database_u_i/utils/colors.dart';
 
 class AboutWidget extends StatelessWidget {
   final bool status;
   final String label;
   final String active;
-  final String inactive;
 
-  const AboutWidget(
-      {super.key,
-      required this.status,
-      required this.label,
-      required this.active,
-      required this.inactive});
+  const AboutWidget({
+    super.key,
+    required this.status,
+    required this.label,
+    required this.active,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +30,18 @@ class AboutWidget extends StatelessWidget {
           Container(
             height: 50,
             width: 40,
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: customColor3,
               borderRadius: BorderRadius.circular(50),
             ),
-            child: Image.asset(
-              status ? active : inactive,
+            child: SvgPicture.asset(
+              width: 10,
+              height: 10,
+              active,
+              colorFilter: status
+                  ? const ColorFilter.mode(Colors.white, BlendMode.srcIn)
+                  : const ColorFilter.mode(customColor4, BlendMode.srcIn),
             ),
           ),
           AnimatedSize(

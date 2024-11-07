@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
 
 class LoginController extends GetxController {
-  //TODO: Implement LoginController
-
   final formKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -14,7 +13,7 @@ class LoginController extends GetxController {
 
   void login() async {
     if (formKey.currentState!.validate()) {
-      Get.offAllNamed('/landing');
+      Get.offAllNamed(Routes.LANDING);
     }
   }
 }

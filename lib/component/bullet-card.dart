@@ -1,5 +1,6 @@
 // bullet_list_card.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class BulletListCard extends StatelessWidget {
   final String title;
@@ -28,15 +29,16 @@ class BulletListCard extends StatelessWidget {
                 Container(
                   height: 40,
                   width: 40,
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color: Colors.grey[300]!),
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: Image.asset(
+                  child: SvgPicture.asset(
+                    width: 10,
+                    height: 10,
                     icon,
-                    height: 30,
-                    width: 30,
                   ),
                 ),
                 const SizedBox(width: 10),
