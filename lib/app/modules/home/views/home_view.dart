@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
 import 'package:heartrate_database_u_i/component/about_widget.dart';
 import 'package:heartrate_database_u_i/component/bullet-card.dart';
+import 'package:heartrate_database_u_i/component/profile_widget.dart';
 import 'package:heartrate_database_u_i/utils/colors.dart';
 
 import '../controllers/home_controller.dart';
@@ -30,35 +31,10 @@ class HomeView extends GetView<HomeController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              Get.toNamed(Routes.PROFILE);
-                            },
-                            child: const Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: AssetImage(
-                                    "assets/images/doctor_streamline.png",
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("Good Morning"),
-                                    Text("Belva",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        )),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                          const ProfileWidget()
                           // SizedBox(
                           //   width: 40,
                           //   child: ElevatedButton(

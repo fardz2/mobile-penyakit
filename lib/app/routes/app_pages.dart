@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/detail_penyakit/bindings/detail_penyakit_binding.dart';
+import '../modules/detail_penyakit/views/detail_penyakit_view.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/landing/bindings/landing_binding.dart';
 import '../modules/landing/views/landing_view.dart';
@@ -16,7 +18,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.OPENING;
+  static const INITIAL = Routes.LANDING;
 
   static final routes = [
     GetPage(
@@ -46,6 +48,11 @@ class AppPages {
       name: _Paths.PROFILE,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.DETAIL_PENYAKIT,
+      page: () => const DetailPenyakitView(),
+      binding: DetailPenyakitBinding(),
     ),
   ];
 }
