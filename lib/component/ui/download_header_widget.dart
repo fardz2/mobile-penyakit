@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:heartrate_database_u_i/component/button_back.dart';
+import 'package:heartrate_database_u_i/component/ui/button_back.dart';
 
 class DownloadHeaderWidget extends StatelessWidget {
   const DownloadHeaderWidget({Key? key}) : super(key: key);

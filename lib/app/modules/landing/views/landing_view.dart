@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:heartrate_database_u_i/component/navbar-item.dart';
+import 'package:heartrate_database_u_i/component/ui/navbar-item.dart';
 
 import '../controllers/landing_controller.dart';
 

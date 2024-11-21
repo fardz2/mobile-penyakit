@@ -7,6 +7,7 @@ class ListPenyakit extends StatelessWidget {
   final String jenis;
   final String tanggal;
   final String waktu;
+
   const ListPenyakit(
       {super.key,
       required this.name,
@@ -20,13 +21,13 @@ class ListPenyakit extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: Colors.white, // Tambahkan warna latar belakang untuk efek shadow
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 20,
-            offset: const Offset(0, 3), // Posisi bayangan
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -59,16 +60,21 @@ class ListPenyakit extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        overflow: TextOverflow.ellipsis,
+                    // Use Flexible to allow text to fit within available space
+                    Flexible(
+                      child: Text(
+                        name,
+                        style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
-                    Text(
-                      "Jenis penyakit • $jenis",
-                      style: const TextStyle(
-                        overflow: TextOverflow.ellipsis,
+                    Flexible(
+                      child: Text(
+                        "$jenis",
+                        style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                   ],
@@ -79,16 +85,20 @@ class ListPenyakit extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                tanggal,
-                style: const TextStyle(
-                  overflow: TextOverflow.ellipsis,
+              Flexible(
+                child: Text(
+                  tanggal,
+                  style: const TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
-              Text(
-                waktu,
-                style: const TextStyle(
-                  overflow: TextOverflow.ellipsis,
+              Flexible(
+                child: Text(
+                  waktu,
+                  style: const TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ],

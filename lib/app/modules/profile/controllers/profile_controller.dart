@@ -1,39 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
+import 'package:heartrate_database_u_i/utils/api/auth/AuthService.dart';
+import 'package:heartrate_database_u_i/utils/storage_service.dart';
+import 'package:heartrate_database_u_i/app/models/user/User.dart';
 
 class ProfileController extends GetxController {
-  //TODO: Implement ProfileController
+  final user =
+      User(id: 0, name: '', email: '', institution: '', gender: '', phone: '')
+          .obs;
+  final isLoading = false.obs;
 
-  final List<Map<String, dynamic>> profileData = [
-    {
-      'iconPath': "assets/icons/svg/profile.svg",
-      'label': "Belva",
-    },
-    {
-      'iconPath': "assets/icons/svg/envelope-fill.svg",
-      'label': "mgbelvanaufal@gmail.com",
-    },
-    {
-      'iconPath': "assets/icons/svg/building.svg",
-      'label': "Rs Budiman Surga",
-    },
-    {
-      'iconPath': "assets/icons/svg/gender-male.svg",
-      'label': "Male",
-    },
-    {
-      'iconPath': "assets/icons/svg/telephone-fill.svg",
-      'label': "083874658428",
-    },
-    {
-      'iconPath': "assets/icons/svg/file-earmark-check-fill.svg",
-      'label': "Melakukan riset dalam penyakit jantung",
-    },
-    {
-      'iconPath': "assets/icons/svg/logout.svg",
-      'label': "logout",
-      'iconBackgroundColor': Colors.red,
-      'backgroundColor': Colors.red,
-    },
-  ];
+  // Fungsi untuk mengambil data profil pengguna
+  @override
+  void onInit() {
+    super.onInit();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    isLoading.value = true;
+    try {
+      final fetchedUser = await AuthService().getProfile();
+
+      user.value = fetchedUser;
+    } catch (e) {
+      print("Error fetching profile: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void logout() {
+    StorageService.clearToken("auth_token");
+
+    Get.snackbar(
+      'Logout',
+      'Anda telah berhasil logout',
+      snackPosition: SnackPosition.BOTTOM,
+    );
+    Get.offAllNamed(Routes.LOGIN);
+  }
 }

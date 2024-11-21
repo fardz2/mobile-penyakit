@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:heartrate_database_u_i/helpers/login_validation.dart';
-import 'package:heartrate_database_u_i/utils/colors.dart';
+import 'package:heartrate_database_u_i/component/layouts/auth/login.dart';
+import 'package:heartrate_database_u_i/component/layouts/auth/signup.dart';
+import 'package:heartrate_database_u_i/component/ui/login_signup_toogle.dart';
 
 import '../controllers/login_controller.dart';
 
@@ -12,99 +13,58 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: Image.asset(
-                  "assets/images/loginframe.png",
+        child: Obx(() {
+          bool isLoggedIn = controller
+              .isLoginSelected.value; // Check if login or signup is selected
+          return SingleChildScrollView(
+            child: Container(
+              // Set background image based on login status, aligned to the top
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    isLoggedIn
+                        ? "assets/images/loginframe.png" // Background for login
+                        : "assets/images/background.png", // Background for signup
+                  ),
+                  alignment: Alignment.topCenter, // Align image at the top
+                  fit: isLoggedIn ? null : BoxFit.cover, // Fill the screen
                 ),
               ),
-              // Menambahkan jarak antara gambar dan teks
-              Padding(
-                padding: const EdgeInsets.only(right: 50, left: 50, bottom: 20),
-                child: Column(
-                  children: [
-                    const Text(
-                      "Login",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
+              child: Column(
+                children: [
+                  // Responsive SizedBox based on screen height
+                  SizedBox(
+                    height: isLoggedIn
+                        ? MediaQuery.of(context).size.height *
+                            0.44 // 30% of screen height
+                        : 0, // No extra space if not logged in
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        LoginSignUpToggle(),
+                        const SizedBox(height: 10),
+                        const Text(
+                          "Know Your HeartRate by Entering Your HeartRate Into The Application",
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 24),
+                        // Display the appropriate widget based on login state
+                        isLoggedIn ? Login() : Signup(),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      "Live every day of field work practice in a more comfortable way",
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    Form(
-                      key: controller.formKey,
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: controller.usernameController,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(
-                                Icons.person,
-                                color: Color(0xff53516C),
-                              ),
-                              labelText: "Username",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            validator: LoginValidation.username,
-                          ),
-                          const SizedBox(height: 15),
-                          TextFormField(
-                              controller: controller.passwordController,
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              decoration: InputDecoration(
-                                prefixIcon: Image.asset(
-                                  "assets/icons/password.png",
-                                  width: 20,
-                                ),
-                                labelText: "Password",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              obscureText: true,
-                              validator: LoginValidation.password),
-                          const SizedBox(height: 15),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: controller.login,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: customColor,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 50,
-                                  vertical: 15,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              child: const Text("Login",
-                                  style: TextStyle(color: Colors.white)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  // Responsive spacing at the bottom
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height *
+                          0.05), // 5% of screen height
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        }),
       ),
     );
   }

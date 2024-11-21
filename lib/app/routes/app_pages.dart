@@ -10,7 +10,7 @@ import '../modules/login/views/login_view.dart';
 import '../modules/opening/bindings/opening_binding.dart';
 import '../modules/opening/views/opening_view.dart';
 import '../modules/penyakit/views/penyakit_view.dart';
-import '../modules/profile/bindings/profile_binding.dart';
+
 import '../modules/profile/views/profile_view.dart';
 
 part 'app_routes.dart';
@@ -18,12 +18,12 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LANDING;
+  static const INITIAL = Routes.OPENING;
 
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => HomeView(),
+      page: () => const HomeView(),
     ),
     GetPage(
       name: _Paths.OPENING,
@@ -42,12 +42,11 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PENYAKIT,
-      page: () => const PenyakitView(),
+      page: () => PenyakitView(),
     ),
     GetPage(
       name: _Paths.PROFILE,
       page: () => const ProfileView(),
-      binding: ProfileBinding(),
     ),
     GetPage(
       name: _Paths.DETAIL_PENYAKIT,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
-import 'package:heartrate_database_u_i/component/about_widget.dart';
-import 'package:heartrate_database_u_i/component/bullet-card.dart';
-import 'package:heartrate_database_u_i/component/profile_widget.dart';
+
+import 'package:heartrate_database_u_i/component/ui/about_widget.dart';
+import 'package:heartrate_database_u_i/component/ui/bullet-card.dart';
+import 'package:heartrate_database_u_i/component/ui/profile_widget.dart';
 import 'package:heartrate_database_u_i/utils/colors.dart';
 
 import '../controllers/home_controller.dart';
@@ -31,10 +31,10 @@ class HomeView extends GetView<HomeController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const ProfileWidget()
+                          ProfileWidget()
                           // SizedBox(
                           //   width: 40,
                           //   child: ElevatedButton(

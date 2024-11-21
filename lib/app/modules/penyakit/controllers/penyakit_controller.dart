@@ -1,94 +1,63 @@
 import 'package:get/get.dart';
+import 'package:heartrate_database_u_i/app/models/disease/disease.dart';
+import 'package:heartrate_database_u_i/utils/api/disease/disease_service.dart';
 
 class PenyakitController extends GetxController {
-  final listPenyakit = [
-    {
-      "image": "assets/images/ilus1.png",
-      "penyakit": "Arrhythmia",
-      "record": 1000,
-      "updated": "21 hours ago",
-      "list_penyakit": [
-        {
-          "name": "Record 1",
-          "jenis": "FUC",
-          "tanggal": "02/12/2024",
-          "waktu": "01:22:00"
-        },
-        {
-          "name": "Record 2",
-          "jenis": "ABC",
-          "tanggal": "03/12/2024",
-          "waktu": "03:00:00"
-        },
-        {
-          "name": "Record 3",
-          "jenis": "XYZ",
-          "tanggal": "04/12/2024",
-          "waktu": "05:15:00"
-        },
-        {
-          "name": "Record 4",
-          "jenis": "DEF",
-          "tanggal": "06/12/2024",
-          "waktu": "07:00:00"
-        },
-        {
-          "name": "Record 5",
-          "jenis": "GHI",
-          "tanggal": "07/12/2024",
-          "waktu": "08:30:00"
-        },
-        {
-          "name": "Record 6",
-          "jenis": "JKL",
-          "tanggal": "08/12/2024",
-          "waktu": "09:45:00"
-        },
-      ]
-    },
-    {
-      "image": "assets/images/ilus1.png",
-      "penyakit": "Myocardial Infarction",
-      "record": 1200,
-      "updated": "1 day ago",
-      "list_penyakit": [
-        {
-          "name": "Record 1",
-          "jenis": "DEF",
-          "tanggal": "02/12/2024",
-          "waktu": "02:30:00"
-        },
-        {
-          "name": "Record 2",
-          "jenis": "XYZ",
-          "tanggal": "05/12/2024",
-          "waktu": "12:00:00"
-        },
-        {
-          "name": "Record 3",
-          "jenis": "ABC",
-          "tanggal": "07/12/2024",
-          "waktu": "13:15:00"
-        },
-        {
-          "name": "Record 4",
-          "jenis": "XYZ",
-          "tanggal": "08/12/2024",
-          "waktu": "10:00:00"
-        },
-        {
-          "name": "Record 5",
-          "jenis": "DEF",
-          "tanggal": "09/12/2024",
-          "waktu": "14:45:00"
-        },
-        {
-          "name": "Record 6",
-          "jenis": "GHI",
-          "tanggal": "10/12/2024",
-          "waktu": "15:30:00"
-        },
-      ]
-    },
-  ];
+  final penyakitList = <Disease>[].obs;
+  final isLoading = false.obs;
+  final isLoadMore = false.obs;
+  final errorMessage = ''.obs;
+
+  final currentPage = 1.obs;
+  final hasMorePages = true.obs;
+
+  Future<void> fetchPenyakit({bool loadMore = false}) async {
+    if (!hasMorePages.value && loadMore)
+      return; // Jika tidak ada lagi halaman, hentikan
+    try {
+      if (loadMore) {
+        isLoadMore(true);
+      } else {
+        penyakitList.clear();
+        currentPage.value = 1;
+      }
+
+      final response =
+          await DiseaseService().getAllDisease(page: currentPage.value);
+      print(response);
+      penyakitList.addAll(response.diseases);
+
+      hasMorePages.value = response.hasMorePages;
+      if (response.hasMorePages) {
+        currentPage.value += 1;
+      }
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoadMore(false);
+    }
+  }
+
+  Future<void> fetchMorePenyakit() async {
+    isLoading(true);
+    try {
+      await fetchPenyakit(loadMore: false);
+    } catch (e) {
+      errorMessage.value = 'Terjadi kesalahan: $e';
+    } finally {
+      isLoading(true);
+    }
+  }
+
+  // Optional: Method to clear error message if necessary
+  void clearError() {
+    errorMessage.value = '';
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    fetchMorePenyakit();
+  }
 }
