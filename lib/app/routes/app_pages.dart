@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/detail_penyakit/bindings/detail_penyakit_binding.dart';
 import '../modules/detail_penyakit/views/detail_penyakit_view.dart';
+import '../modules/detail_record/bindings/detail_record_binding.dart';
+import '../modules/detail_record/views/detail_record_view.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/landing/bindings/landing_binding.dart';
 import '../modules/landing/views/landing_view.dart';
@@ -10,7 +12,6 @@ import '../modules/login/views/login_view.dart';
 import '../modules/opening/bindings/opening_binding.dart';
 import '../modules/opening/views/opening_view.dart';
 import '../modules/penyakit/views/penyakit_view.dart';
-
 import '../modules/profile/views/profile_view.dart';
 
 part 'app_routes.dart';
@@ -52,6 +53,11 @@ class AppPages {
       name: _Paths.DETAIL_PENYAKIT,
       page: () => const DetailPenyakitView(),
       binding: DetailPenyakitBinding(),
+    ),
+    GetPage(
+      name: _Paths.DETAIL_RECORD,
+      page: () => const DetailRecordView(),
+      binding: DetailRecordBinding(),
     ),
   ];
 }

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:heartrate_database_u_i/app/modules/landing/controllers/landing_controller.dart';
 import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
 import 'package:heartrate_database_u_i/utils/api/auth/AuthService.dart';
 import 'package:heartrate_database_u_i/utils/storage_service.dart';
@@ -10,6 +10,7 @@ class ProfileController extends GetxController {
       User(id: 0, name: '', email: '', institution: '', gender: '', phone: '')
           .obs;
   final isLoading = false.obs;
+  final LandingController landingController = Get.find();
 
   // Fungsi untuk mengambil data profil pengguna
   @override
@@ -26,6 +27,10 @@ class ProfileController extends GetxController {
       user.value = fetchedUser;
     } catch (e) {
       print("Error fetching profile: $e");
+      if (e.toString() == "Unauthenticated") {
+        StorageService.clearToken("auth_token");
+        landingController.setLogin();
+      }
     } finally {
       isLoading.value = false;
     }
@@ -39,6 +44,6 @@ class ProfileController extends GetxController {
       'Anda telah berhasil logout',
       snackPosition: SnackPosition.BOTTOM,
     );
-    Get.offAllNamed(Routes.LOGIN);
+    Get.offAllNamed(Routes.LANDING);
   }
 }

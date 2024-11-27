@@ -45,7 +45,7 @@ class OpeningView extends GetView<OpeningController> {
               GestureDetector(
                 onTap: () {
                   StorageService.saveToken('isFirstTime', 'false');
-                  Get.offAndToNamed(Routes.LOGIN);
+                  Get.offAndToNamed(Routes.LANDING);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,

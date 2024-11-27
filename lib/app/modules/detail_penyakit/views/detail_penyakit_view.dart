@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
 import 'package:heartrate_database_u_i/component/ui/download_header_widget.dart';
 import 'package:heartrate_database_u_i/component/ui/list_penyakit.dart';
 import 'package:heartrate_database_u_i/utils/colors.dart';
@@ -12,10 +13,12 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
   Widget build(BuildContext context) {
     final scrollController = ScrollController();
 
-    // Menambahkan listener untuk infinite scroll
+    // Listener untuk infinite scroll
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
+              scrollController.position.maxScrollExtent &&
+          !controller.isFetching.value &&
+          controller.hasMorePages.value) {
         controller.fetchRecord(controller.penyakitId, loadMore: true);
       }
     });
@@ -30,7 +33,7 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
             );
           }
 
-          // Pastikan penyakitDetail tidak null
+          // Pastikan detail penyakit tidak null
           var penyakit = controller.penyakitDetail.value;
           if (penyakit == null) {
             return const Center(
@@ -38,26 +41,23 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
             );
           }
 
-          // Tampilan utama jika penyakit tidak null
+          // Tampilan utama jika detail penyakit tersedia
           return RefreshIndicator(
             onRefresh: () async {
-              await controller
-                  .fetchDetailPenyakit(controller.penyakitId); // Refresh data
+              await controller.fetchDetailPenyakit(controller.penyakitId);
             },
             child: CustomScrollView(
-              controller:
-                  scrollController, // ScrollController untuk infinite scroll
+              controller: scrollController,
               slivers: [
-                // SliverAppBar to fix DownloadHeaderWidget at the top
+                // Header untuk detail penyakit
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const DownloadHeaderWidget(), // Fixed at the top
+                        DownloadHeaderWidget(),
                         const SizedBox(height: 20),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -69,8 +69,7 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
                                 ),
-                                softWrap:
-                                    true, // Memastikan teks membungkus ke baris berikutnya jika panjang
+                                softWrap: true,
                               ),
                             ),
                             Container(
@@ -81,7 +80,7 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
-                                "${penyakit.diseaseRecordsCount} Record",
+                                "${penyakit.diseaseRecordsCount} Records",
                                 style: const TextStyle(color: Colors.white),
                               ),
                             ),
@@ -92,80 +91,120 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
                           penyakit.deskripsi,
                         ),
                         const SizedBox(height: 20),
-
-                        // Search and Filter Section
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: "Cari...",
-                                  suffixIcon: const Icon(Icons.search),
-                                  border: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        width: 0.5, color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        width: 0.5, color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            IconButton(
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStateProperty.all(
-                                  customColor.withOpacity(0.5),
-                                ),
-                                padding: WidgetStateProperty.all(
-                                    const EdgeInsets.all(15)),
-                                shadowColor:
-                                    WidgetStateProperty.all(Colors.transparent),
-                              ),
-                              onPressed: () {},
-                              icon: const Icon(Icons.filter_list),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ),
                 ),
+
+                // Daftar penyakit berdasarkan tipe schema
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      if (index < controller.recordList.length) {
-                        var penyakitItem = controller.recordList[index];
+                      if (index < controller.recordList.value.length) {
+                        var penyakitItem = controller.recordList.value[index];
+
+                        // Variabel untuk menyimpan data final
+                        String name = "Tidak tersedia";
+                        String jenis = "Tidak tersedia";
+                        String tanggal = "Tidak tersedia";
+                        String waktu = "Tidak tersedia";
+                        bool waktuDecimalFound = false;
+
+                        // Iterasi melalui schema untuk mencari data
+                        for (var schema in controller.schema.value!) {
+                          final fieldValue =
+                              penyakitItem.getField(schema.name, schema);
+
+                          // Abaikan tipe file
+                          if (schema.type == "file") {
+                            continue;
+                          }
+
+                          // Isi variabel jika kosong
+                          if (schema.type == "string" &&
+                              name == "Tidak tersedia") {
+                            name = fieldValue?.toString() ?? "Tidak tersedia";
+                          } else if (schema.type == "string" &&
+                              jenis == "Tidak tersedia") {
+                            jenis = fieldValue?.toString() ?? "Tidak tersedia";
+                          } else if (schema.type == "datetime" &&
+                              tanggal == "Tidak tersedia") {
+                            tanggal =
+                                _formatField(fieldValue, type: "datetime");
+                          } else if (schema.type == "decimal" &&
+                              !waktuDecimalFound) {
+                            waktu = _formatField(fieldValue, type: "decimal");
+                            waktuDecimalFound =
+                                true; // Tandai bahwa decimal ditemukan
+                          } else if (!waktuDecimalFound &&
+                              schema.type == "string") {
+                            waktu = fieldValue?.toString() ?? "Tidak tersedia";
+                          }
+
+                          // Jika semua data sudah terisi, hentikan iterasi
+                          if (name != "Tidak tersedia" &&
+                              jenis != "Tidak tersedia" &&
+                              tanggal != "Tidak tersedia" &&
+                              waktu != "Tidak tersedia") {
+                            break;
+                          }
+                        }
+
+                        // Menampilkan data dengan ListPenyakit
                         return Padding(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 5,
-                            horizontal: 20, // Padding untuk setiap item
-                          ),
-                          child: ListPenyakit(
-                            name: penyakitItem?.data?.record ?? "No Record",
-                            jenis: penyakitItem?.data?.jenis ?? "Unknown",
-                            tanggal: penyakitItem?.data?.tanggalTes ??
-                                "Tanggal tidak tersedia",
-                            waktu: penyakitItem?.data?.durasi.toString() ??
-                                "Durasi tidak tersedia",
+                              vertical: 5, horizontal: 20),
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.toNamed(Routes.DETAIL_RECORD, arguments: {
+                                "penyakit_id": controller.penyakitId,
+                                "record_id": penyakitItem.id,
+                              });
+                            },
+                            child: ListPenyakit(
+                              name: name,
+                              jenis: jenis,
+                              tanggal: tanggal,
+                              waktu: waktu,
+                            ),
                           ),
                         );
                       } else {
-                        return const Center(child: CircularProgressIndicator());
+                        // Indikator loading saat memuat lebih banyak data
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
                       }
                     },
-                    childCount: controller.recordList.length +
+                    childCount: controller.recordList.value.length +
                         (controller.hasMorePages.value ? 1 : 0),
                   ),
-                )
+                ),
               ],
             ),
           );
         }),
       ),
     );
+  }
+
+  /// Fungsi untuk memformat nilai berdasarkan tipe data
+  String _formatField(dynamic value, {required String type}) {
+    if (value == null) return "Tidak tersedia";
+    switch (type) {
+      case "datetime":
+        final date = DateTime.tryParse(value.toString());
+        return date != null
+            ? "${date.day}/${date.month}/${date.year}"
+            : "Tidak valid";
+      case "decimal":
+        return double.tryParse(value.toString())?.toStringAsFixed(2) ??
+            "Tidak valid";
+      default:
+        return value.toString();
+    }
   }
 }

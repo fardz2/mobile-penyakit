@@ -8,7 +8,6 @@ import '../controllers/landing_controller.dart';
 class LandingBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(ProfileController());
     Get.lazyPut<LandingController>(
       () => LandingController(),
     );
@@ -18,5 +17,6 @@ class LandingBinding extends Bindings {
     Get.lazyPut<PenyakitController>(
       () => PenyakitController(),
     );
+    Get.lazyPut<ProfileController>(() => ProfileController());
   }
 }

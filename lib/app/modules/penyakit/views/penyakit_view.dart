@@ -12,101 +12,140 @@ class PenyakitView extends GetView<PenyakitController> {
   Widget build(BuildContext context) {
     final scrollController = ScrollController();
 
-    // Menambahkan listener untuk infinite scroll
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        controller.fetchPenyakit(loadMore: true);
+              scrollController.position.maxScrollExtent &&
+          !controller.isLoadMore.value &&
+          controller.hasMorePages.value) {
+        controller.fetchMorePenyakit(); // Load more ketika sampai di bawah
       }
     });
 
-    return Scaffold(
-      body: SafeArea(
-        child: Obx(() {
-          // Kondisi jika terjadi error atau data kosong
-          if (controller.errorMessage.value.isNotEmpty) {
-            return _buildErrorState();
-          } else if (controller.penyakitList.isEmpty) {
-            return _buildEmptyState();
-          }
+    return GestureDetector(
+      onTap: () {
+        // Hapus fokus dari semua input saat pengguna mengetuk di luar
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Obx(() {
+            if (controller.landingController.isLogin.value == false) {
+              return _Login();
+            }
 
-          // Tampilan utama jika data tersedia
-          return RefreshIndicator(
-            onRefresh: () async {
-              await controller.fetchPenyakit(); // Refresh data
-            },
-            child: CustomScrollView(
-              controller: scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: [
-                // Profile and Notification Row
-                SliverPadding(
-                  padding: const EdgeInsets.all(20),
-                  sliver: SliverToBoxAdapter(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ProfileWidget(),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Title
-                const SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  sliver: SliverToBoxAdapter(
-                    child: Text(
-                      "Pilih Penyakit",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+            return RefreshIndicator(
+              onRefresh: () async {
+                controller.searchFocusNode
+                    .unfocus(); // Tutup keyboard saat refresh
+                await controller.fetchPenyakit(
+                    searchQuery: controller.searchController.text);
+              },
+              child: CustomScrollView(
+                controller: scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
+                  // Profile Section
+                  SliverPadding(
+                    padding: const EdgeInsets.all(20),
+                    sliver: SliverToBoxAdapter(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ProfileWidget(),
+                        ],
                       ),
                     ),
                   ),
-                ),
 
-                // List of Penyakit
-                SliverPadding(
-                  padding:
-                      const EdgeInsets.only(top: 15.0, left: 20, right: 20),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        if (index < controller.penyakitList.length) {
-                          var penyakitData = controller.penyakitList[index];
-                          return PenyakitCard(
-                            image: penyakitData.coverPage,
-                            penyakit: penyakitData.name,
-                            record: penyakitData.diseaseRecordsCount,
-                            updated: penyakitData.updatedAt,
-                            onTap: () {
-                              Get.toNamed(
-                                Routes.DETAIL_PENYAKIT,
-                                arguments: penyakitData.id,
-                              );
-                            },
-                          );
-                        } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                      },
-                      childCount: controller.penyakitList.length +
-                          (controller.hasMorePages.value ? 1 : 0),
+                  // Title Section
+                  const SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    sliver: SliverToBoxAdapter(
+                      child: Text(
+                        "Pilih penyakit \nyang anda inginkan",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          );
-        }),
+
+                  // Search Section
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 10.0),
+                    sliver: SliverToBoxAdapter(
+                      child: TextField(
+                        controller: controller.searchController,
+                        focusNode: controller.searchFocusNode,
+                        onChanged: (value) {
+                          controller.fetchPenyakit(searchQuery: value);
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Cari Penyakit...',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          prefixIcon: const Icon(Icons.search),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Error or Empty State
+                  if (controller.errorMessage.value.isNotEmpty)
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: _buildErrorState(),
+                    )
+                  else if (controller.penyakitList.isEmpty)
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: _buildEmptyState(),
+                    )
+                  else
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10.0),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            if (index < controller.penyakitList.length) {
+                              var penyakitData = controller.penyakitList[index];
+                              return PenyakitCard(
+                                image: penyakitData.coverPage,
+                                penyakit: penyakitData.name,
+                                record: penyakitData.diseaseRecordsCount,
+                                updated: penyakitData.updatedAt,
+                                onTap: () {
+                                  controller.searchFocusNode.unfocus();
+                                  Get.toNamed(
+                                    Routes.DETAIL_PENYAKIT,
+                                    arguments: penyakitData.id,
+                                  );
+                                },
+                              );
+                            } else {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+                          },
+                          childCount: controller.penyakitList.length +
+                              (controller.hasMorePages.value ? 1 : 0),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          }),
+        ),
       ),
     );
   }
 
-  // Widget untuk tampilan error
   Widget _buildErrorState() {
     return Center(
       child: Column(
@@ -120,25 +159,12 @@ class PenyakitView extends GetView<PenyakitController> {
             style: const TextStyle(fontSize: 18, color: Colors.black54),
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              controller.fetchMorePenyakit(); // Mencoba memuat ulang data
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-            ),
-            child: const Text(
-              "Coba Lagi",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+          _buildRetryButton(),
         ],
       ),
     );
   }
 
-  // Widget untuk tampilan data kosong
   Widget _buildEmptyState() {
     return Center(
       child: Column(
@@ -151,15 +177,46 @@ class PenyakitView extends GetView<PenyakitController> {
             style: TextStyle(fontSize: 18, color: Colors.black54),
           ),
           const SizedBox(height: 20),
+          _buildRetryButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRetryButton() {
+    return ElevatedButton(
+      onPressed: () {
+        controller.fetchPenyakit(); // Retry fetching data
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue,
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+      ),
+      child: const Text("Muat Ulang"),
+    );
+  }
+
+  Widget _Login() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 20),
+          const Text(
+            "Belum login, silahkan login terlebih dahulu.",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, color: Colors.black54),
+          ),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              controller.fetchPenyakit(); // Mencoba memuat ulang data
+              Get.toNamed(Routes.LOGIN);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
             ),
-            child: const Text("Muat Ulang"),
+            child: const Text("Login"),
           ),
         ],
       ),

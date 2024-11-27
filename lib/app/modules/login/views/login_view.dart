@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/component/layouts/auth/login.dart';
 import 'package:heartrate_database_u_i/component/layouts/auth/signup.dart';
+import 'package:heartrate_database_u_i/component/ui/button_back.dart';
 import 'package:heartrate_database_u_i/component/ui/login_signup_toogle.dart';
 
 import '../controllers/login_controller.dart';
@@ -31,12 +32,17 @@ class LoginView extends GetView<LoginController> {
                 ),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 20, left: 20),
+                    child: ButtonBack(),
+                  ),
                   // Responsive SizedBox based on screen height
                   SizedBox(
                     height: isLoggedIn
                         ? MediaQuery.of(context).size.height *
-                            0.44 // 30% of screen height
+                            0.38 // 30% of screen height
                         : 0, // No extra space if not logged in
                   ),
                   Padding(

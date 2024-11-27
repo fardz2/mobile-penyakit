@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart'; // Import the package for controlling orientation
-import 'package:heartrate_database_u_i/app/modules/profile/controllers/profile_controller.dart';
 import 'app/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   await dotenv.load(fileName: ".env");
-
+  await FlutterDownloader.initialize(
+      debug: true, ignoreSsl: true // Mengaktifkan debug log
+      );
   // Lock orientation to portrait
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // Portrait mode (upward)
@@ -33,13 +35,10 @@ void main() async {
 }
 
 Future<String> checkInitialRoute() async {
-  String? authToken = GetStorage().read('auth_token');
   String? isFirstTime = GetStorage().read('isFirstTime');
 
-  if (authToken != null) {
+  if (isFirstTime != null) {
     return Routes.LANDING;
-  } else if (isFirstTime != null) {
-    return Routes.LOGIN;
   }
   return Routes.OPENING;
 }

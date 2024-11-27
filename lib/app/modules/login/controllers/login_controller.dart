@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
+import 'package:heartrate_database_u_i/app/modules/landing/controllers/landing_controller.dart';
+import 'package:heartrate_database_u_i/app/modules/penyakit/controllers/penyakit_controller.dart';
+
 import 'package:heartrate_database_u_i/utils/api/auth/AuthService.dart';
 
 class LoginController extends GetxController {
@@ -25,6 +27,8 @@ class LoginController extends GetxController {
   final passwordSignUp = true.obs;
   final confirmPassword = true.obs;
   final gender = ''.obs;
+  final LandingController landingController = Get.find();
+  final PenyakitController penyakitController = Get.find();
 
   void login() async {
     if (formLogin.currentState!.validate()) {
@@ -33,11 +37,15 @@ class LoginController extends GetxController {
           emailLoginController.text,
           passwordLoginController.text,
         );
+        landingController.setLogin();
+        penyakitController.errorMessage.value = '';
+        penyakitController.fetchPenyakit();
+
+        Get.back();
         Get.snackbar('Success Login', 'You have successfully Logged in',
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.green,
             colorText: Colors.white);
-        Get.offAllNamed(Routes.LANDING);
       } catch (e) {
         print('Terjadi kesalahan saat login: $e');
 
@@ -46,7 +54,6 @@ class LoginController extends GetxController {
             backgroundColor: Colors.red,
             colorText: Colors.white);
       }
-      print(dotenv.env['API_URL']);
     }
   }
 

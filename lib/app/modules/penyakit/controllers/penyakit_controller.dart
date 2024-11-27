@@ -1,55 +1,76 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/models/disease/disease.dart';
+import 'package:heartrate_database_u_i/app/modules/landing/controllers/landing_controller.dart';
 import 'package:heartrate_database_u_i/utils/api/disease/disease_service.dart';
 
 class PenyakitController extends GetxController {
   final penyakitList = <Disease>[].obs;
-  final isLoading = false.obs;
+  final isLoading = false.obs; // Indikator untuk loading
   final isLoadMore = false.obs;
   final errorMessage = ''.obs;
 
   final currentPage = 1.obs;
   final hasMorePages = true.obs;
+  final LandingController landingController = Get.find();
 
-  Future<void> fetchPenyakit({bool loadMore = false}) async {
+  // Controller dan FocusNode untuk Search
+  final searchController = TextEditingController();
+  final searchFocusNode = FocusNode();
+
+  Future<void> fetchPenyakit(
+      {bool loadMore = false, String searchQuery = ""}) async {
     if (!hasMorePages.value && loadMore)
-      return; // Jika tidak ada lagi halaman, hentikan
+      return; // Hentikan jika tidak ada lagi halaman
+
     try {
       if (loadMore) {
         isLoadMore(true);
       } else {
+        isLoading(true); // Set isLoading ke true ketika mulai mengambil data
         penyakitList.clear();
         currentPage.value = 1;
       }
 
-      final response =
-          await DiseaseService().getAllDisease(page: currentPage.value);
-      print(response);
-      penyakitList.addAll(response.diseases);
+      // Call the service with searchQuery if provided
+      final response = await DiseaseService().getAllDisease(
+        page: currentPage.value,
+        searchQuery: searchQuery, // Pass searchQuery to the service
+      );
+
+      // Tambahkan hanya data yang baru
+      final newDiseases = response.diseases.where((newDisease) {
+        return !penyakitList
+            .any((existingDisease) => existingDisease.id == newDisease.id);
+      }).toList();
+
+      penyakitList.addAll(newDiseases);
 
       hasMorePages.value = response.hasMorePages;
       if (response.hasMorePages) {
-        currentPage.value += 1;
+        currentPage.value +=
+            1; // Increment the page after successfully fetching
       }
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
+      isLoading(false); // Set isLoading ke false setelah data selesai dimuat
       isLoadMore(false);
     }
   }
 
   Future<void> fetchMorePenyakit() async {
-    isLoading(true);
+    if (isLoading.value) return; // Jangan memuat data lagi jika sedang loading
+    isLoadMore(true);
     try {
-      await fetchPenyakit(loadMore: false);
+      await fetchPenyakit(loadMore: true);
     } catch (e) {
       errorMessage.value = 'Terjadi kesalahan: $e';
     } finally {
-      isLoading(true);
+      isLoadMore(false);
     }
   }
 
-  // Optional: Method to clear error message if necessary
   void clearError() {
     errorMessage.value = '';
   }
@@ -57,7 +78,12 @@ class PenyakitController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    landingController.setLogin();
+    fetchPenyakit(); // Ambil data saat controller diinisialisasi hanya sekali
+  }
 
-    fetchMorePenyakit();
+  @override
+  void onClose() {
+    super.onClose();
   }
 }

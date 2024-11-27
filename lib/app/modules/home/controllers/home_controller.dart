@@ -1,128 +1,43 @@
 import 'package:get/get.dart';
+import 'package:heartrate_database_u_i/app/modules/landing/controllers/landing_controller.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
-  final about = "arrythmia".obs;
-  final List<Map<String, dynamic>> itemsArrythmia = [
+  final LandingController landingController = Get.find();
+  final List<Map<String, dynamic>> about = [
     {
-      'title': 'Penyebab Arrythmia',
-      'icon': 'assets/icons/svg/Subtract.svg',
-      "items": [
-        'Masalah pada sistem listrik jantung',
-        'Penyakit jantung',
-        'Stress atau kecemasan',
-        'Efek samping obat-obatan tertentu',
-        'Ketidakseimbangan elektrolit dalam tubuh',
-      ],
+      "label": "Apa itu",
+      "title": "Apa Itu HealthCare",
+      "content": [
+        "Dashboard Penyakit yang memfasilitasi akses data kesehatan bagi peneliti, memungkinkan mereka untuk fokus pada penelitian tanpa harus mengelola data secara manual dengan data yang dikelola oleh instansi terpercaya dan akses yang aman,"
+      ]
     },
     {
-      'title': 'Gejala Arrythmia',
-      'icon': 'assets/icons/svg/DNA.svg',
-      "items": [
-        'Jantung berdebar',
-        'Detak jantung terasa cepat atau lambat',
-        'Nyeri dada dan Sesak napas',
-        'Pusing atau pingsan',
-      ],
+      "label": "Fitur Aplikasi",
+      "title": "Fitur Aplikasi HealthCare",
+      "content": [
+        "Akses Data yang Lengkap dan Terpercaya \nPeneliti mendapatkan akses ke data penyakit yang telah dikurasi oleh instansi terkait, mencakup berbagai informasi seperti: Detail pasien, Gejala dan diagnosis.Rekam medis, seperti hasil tes atau laporan tambahan.",
+        "Penggunaan Data untuk Berbagai Keperluan Penelitian \nData yang tersedia dapat digunakan untuk Menemukan penyakit tertentu, Mengetahui rekam medis dari berbagai penyakit, dll.",
+        "Fasilitas Pengunduhan Data \nData yang telah disetujui untuk penelitian dapat diunduh dalam format yang siap digunakan untuk analisis statistik, seperti spreadsheet atau file CSV."
+      ]
     },
     {
-      'title': 'Pencegahan Arrythmia',
-      'icon': 'assets/icons/svg/Mask.svg',
-      "items": [
-        'Menjalani gaya hidup sehat',
-        'Mengelola stress dengan baik',
-        'Hindari stimulan berlebihan seperti kafein, alkohol, dan nikotin',
-        'Rutin melakukan pemeriksaan kesehatan jantung'
-      ],
+      "label": "Pengelolaan data",
+      "title": "Pengelolaan Data HealthCare",
+      "content": [
+        "Input Data oleh Instansi \nData penyakit diinput oleh instansi pemegang aplikasi melalui operator yang bertugas. Operator bertanggung jawab untuk memastikan kelengkapan dan keakuratan data sebelum dapat diakses oleh peneliti.",
+        "Akses Data oleh Peneliti \nPeneliti hanya dapat mengakses data yang telah disetujui oleh instansi, sehingga keamanan dan integritas data tetap terjaga.",
+        "Penyimpanan File Pendukung \nAplikasi juga mendukung penyimpanan file tambahan, seperti hasil scan medis, rekaman tes, atau dokumen lain yang relevan dengan dataset penyakit."
+      ]
     },
     {
-      'title': 'Pengobatan Arrythmia',
-      'icon': 'assets/icons/svg/Pill.svg',
-      "items": [
-        'Obat ntuk mengendalikan detak jantung',
-        'Ablasi kateter untuk menghancurkan jaringan penyebab aritmia',
-        'Kardioverter-defibrilator implan (ICD) untuk menghentikan aritmia berbahaya',
-        'Perubahan gaya hidup seperti mengurangi stress'
-      ],
-    },
-    {
-      'title': 'Dampak Arrythmia',
-      'icon': 'assets/icons/svg/Smartwatch-Heart.svg',
-      "items": [
-        'Kecemasan dan depresi terkait kondisi jantung',
-        'Pembatasan aktivitas fisik',
-        'Gangguan tidur',
-        'Penurunan produktivitas kerja',
-        'erubahan dalam hubungan sosial'
-      ],
-    },
-    {
-      'title': 'Diagnosis Arrytmia',
-      'icon': 'assets/icons/svg/Microscope.svg',
-      "items": [
-        'Diagnosis aritmia biasanya dilakukan melalui Elektrokardiogram (EKG), Holter monitor, atau tes stress jantung. Pengobatan dapat meliputi obat-obatan, ablasi kateter, atau pemasangan alat pacu jantung, tergantung pada jenis dan tingkat keparahan aritmia.',
-      ],
-    },
+      "label": "Manfaat",
+      "title": "Manfaat HealthCare",
+      "content": [
+        "Akses Mudah ke Data Berkualitas \nPeneliti dapat langsung menggunakan data yang sudah tersusun tanpa perlu mengumpulkan data sendiri, menghemat waktu dan tenaga.",
+        "Privasi dan Keamanan Data \n Sistem berbasis peran memastikan data hanya diakses oleh pihak yang berwenang, menjaga privasi dan keamanan informasi medis.",
+        "Kolaborasi dan Validasi \nPeneliti dapat berdiskusi langsung dengan operator untuk mengklarifikasi data, memastikan validitas informasi sebelum digunakan dalam penelitian.",
+        "Mendukung Penelitian Berbasis Bukti \nData yang tersedia memungkinkan peneliti untuk melakukan analisis berbasis bukti yang dapat digunakan untuk pengambilan keputusan atau publikasi ilmiah."
+      ]
+    }
   ];
-  final List<Map<String, dynamic>> itemsMyocardial = [
-    {
-      'title': 'Penyebab Myocardial',
-      'icon': 'assets/icons/svg/Subtract.svg',
-      "items": [
-        'Penumpukan plak di arteri koroner (aterosklerosis)',
-        'Pembekuan darah yang menyumbat arteri',
-        'Spasme arteri koroner',
-        'Tekanan atau trauma pada dada',
-      ],
-    },
-    {
-      'title': 'Gejala Myocardial',
-      'icon': 'assets/icons/svg/DNA.svg',
-      "items": [
-        'Nyeri dada atau rasa tidak nyaman',
-        'Nyeri yang menyebar ke lengan, leher, rahang, punggung, atau perut',
-        'Berkeringat dingin, mual, muntah, dan sesak napas',
-      ],
-    },
-    {
-      'title': 'Pencegahan Myocardial',
-      'icon': 'assets/icons/svg/Mask.svg',
-      "items": [
-        'Berhenti merokok dan mengelola stres',
-        'Menjaga berat badan ideal dan olahraga teratur',
-        'Mengelola tekanan darah dan kolesterol',
-        'Mengontrol diabetes (jika ada)',
-      ],
-    },
-    {
-      'title': 'Pengobatan Myocardial',
-      'icon': 'assets/icons/svg/Pill.svg',
-      "items": [
-        'Obat-obatan: antiplatelet, penghambat beta, pengencer darah',
-        'Angioplasti dan pemasangan stent',
-        'Operasi: bypass jantung (untuk kasus berat)',
-      ],
-    },
-    {
-      'title': 'Dampak Myocardial',
-      'icon': 'assets/icons/svg/Smartwatch-Heart.svg',
-      "items": [
-        'Perubahan dalam kemampuan fisik',
-        'Penyesuaian gaya hidup yang signifikan',
-        'Risiko serangan jantung berulang',
-        'Perubahan dalam hubungan personal dan profesional',
-      ],
-    },
-    {
-      'title': 'Diagnosis Myocardial',
-      'icon': 'assets/icons/svg/Microscope.svg',
-      "items": [
-        'Diagnosis Myocardial Infarction melibatkan pemeriksaan fisik, EKG, tes darah untuk enzim troponin, dan pencitraan jantung untuk memeriksa aliran darah dan keparahan serangan.',
-      ],
-    },
-  ];
-
-  void changeAbout(String value) {
-    about.value = value;
-  }
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:heartrate_database_u_i/component/ui/grid_item.dart';
 
-import 'package:heartrate_database_u_i/component/ui/about_widget.dart';
-import 'package:heartrate_database_u_i/component/ui/bullet-card.dart';
 import 'package:heartrate_database_u_i/component/ui/profile_widget.dart';
 import 'package:heartrate_database_u_i/utils/colors.dart';
 
@@ -16,15 +15,14 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 80),
-            child: Column(children: [
-              // Bagian header
-              Container(
+        child: Column(
+          children: [
+            // Bagian header
+            ClipPath(
+              clipper: HeaderClipper(),
+              child: Container(
                 decoration: const BoxDecoration(
-                  color: customColor2,
-                  borderRadius:
-                      BorderRadius.vertical(bottom: Radius.circular(50)),
+                  color: customColor3, // Warna tetap sama
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
@@ -34,101 +32,77 @@ class HomeView extends GetView<HomeController> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ProfileWidget()
-                          // SizedBox(
-                          //   width: 40,
-                          //   child: ElevatedButton(
-                          //     style: ElevatedButton.styleFrom(
-                          //       backgroundColor: Colors.white,
-                          //       shape: RoundedRectangleBorder(
-                          //         borderRadius: BorderRadius.circular(10),
-                          //       ),
-                          //       padding: EdgeInsets.zero,
-                          //       shadowColor: Colors.transparent,
-                          //     ),
-                          //     onPressed: () {},
-                          //     child: Center(
-                          //       child: Image.asset('assets/icons/notif.png'),
-                          //     ),
-                          //   ),
-                          // ),
+                          Obx(() {
+                            return controller.landingController.isLogin.value
+                                ? ProfileWidget(
+                                    color: Colors.white,
+                                  )
+                                : const SizedBox();
+                          }),
                         ],
                       ),
                       const SizedBox(height: 30),
                       const Text(
-                        "Take Care of\nYour Heart Health",
+                        "HealthCare\nDatabase Penyakit",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 40),
-                      Obx(() {
-                        return Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                controller.about.value = "arrythmia";
-                              },
-                              child: AboutWidget(
-                                active: "assets/icons/svg/arrytmia.svg",
-                                status: controller.about.value == "arrythmia",
-                                label: "About Arrythmia",
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            GestureDetector(
-                              onTap: () {
-                                controller.about.value = "myocardial";
-                              },
-                              child: AboutWidget(
-                                active: "assets/icons/svg/penyakit.svg",
-                                status: controller.about.value == "myocardial",
-                                label: "About Myocardial",
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
+                      const SizedBox(height: 80),
                     ],
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Obx(() {
-                  return controller.about.value == "arrythmia"
-                      ? ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: controller.itemsArrythmia.length,
-                          itemBuilder: (context, index) {
-                            return BulletListCard(
-                              icon: controller.itemsArrythmia[index]["icon"],
-                              title: controller.itemsArrythmia[index]["title"],
-                              items: List<String>.from(
-                                  controller.itemsArrythmia[index]["items"]),
-                            );
-                          },
-                        )
-                      : ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: controller.itemsMyocardial.length,
-                          itemBuilder: (context, index) {
-                            return BulletListCard(
-                              icon: controller.itemsMyocardial[index]["icon"],
-                              title: controller.itemsMyocardial[index]["title"],
-                              items: List<String>.from(
-                                  controller.itemsMyocardial[index]["items"]),
-                            );
-                          },
-                        );
-                }),
+            ),
+            // Grid Content
+            GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
-            ])),
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(20),
+              itemCount: controller.about.length,
+              itemBuilder: (context, index) {
+                final item = controller.about[index];
+                return GridItem(
+                  icon: Icons.info_outline,
+                  title: item["label"],
+                  content: item["content"],
+                  titleContent: item["title"],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
+  }
+}
+
+// Clipper untuk bentuk khusus Container
+class HeaderClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(0, size.height - 20); // Garis ke bawah kiri
+    path.quadraticBezierTo(
+      size.width / 2, // Kontrol titik X
+      size.height - 100, // Kontrol titik Y
+      size.width, // Titik akhir X
+      size.height - 20, // Titik akhir Y
+    );
+    path.lineTo(size.width, 0); // Garis ke atas kanan
+    path.close(); // Menutup path
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
   }
 }
