@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/models/disease/record/record_response.dart';
+import 'package:heartrate_database_u_i/component/ui/confirm_dialog.dart';
+import 'package:heartrate_database_u_i/component/ui/download_button.dart';
 import 'package:heartrate_database_u_i/component/ui/download_header_widget.dart';
+import 'package:heartrate_database_u_i/utils/colors.dart';
 import '../controllers/detail_record_controller.dart';
+import 'package:heartrate_database_u_i/utils/file_downloader.dart'; // Import FileDownloader
 
 class DetailRecordView extends GetView<DetailRecordController> {
-  const DetailRecordView({Key? key}) : super(key: key);
+  const DetailRecordView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
         child: Obx(() {
@@ -34,7 +39,12 @@ class DetailRecordView extends GetView<DetailRecordController> {
             );
           }
 
-          final record = controller.recordDetail.value!.records;
+          final recordResponse = controller.recordDetail.value!;
+          final record = recordResponse.records;
+
+          // Check if there are any non-file records
+          bool hasNonFileRecords =
+              recordResponse.schema.any((schema) => schema.type != 'file');
 
           // Display the record details
           return Padding(
@@ -43,9 +53,7 @@ class DetailRecordView extends GetView<DetailRecordController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DownloadHeaderWidget(),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 Text(
                   'Record ${record.id}',
                   style: const TextStyle(
@@ -53,44 +61,72 @@ class DetailRecordView extends GetView<DetailRecordController> {
                 ),
                 const SizedBox(height: 8),
 
-                Card(
-                  color: Colors.white,
-                  elevation: 3,
-                  shadowColor: Colors.grey.withOpacity(0.5),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (var schema
-                            in controller.recordDetail.value!.schema) ...[
-                          // If the field is a file, create a row of buttons
-                          if (schema.type == 'file')
-                            ..._buildFileButtons(record, schema),
-                          // Otherwise, display the field as text
-                          if (schema.type != 'file')
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 4.0),
-                              child: Text(
-                                '${schema.name}: ${record.getField(schema.name, schema) ?? 'No Data'}',
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ),
-                        ],
-                      ],
+                // Only show the card if there are non-file records
+                if (hasNonFileRecords)
+                  Card(
+                    color: Colors.white,
+                    elevation: 3,
+                    shadowColor: Colors.grey.withOpacity(0.5),
+                    child: Container(
+                      width: width,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (var schema in recordResponse.schema) ...[
+                              // Check if the schema type is not 'file'
+                              if (schema.type != 'file')
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: Text(
+                                    // Create the label string
+                                    "${schema.name}\t: ${record.fields[schema.name] ?? 'No Data'}",
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                            ],
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                // Display fields dynamically
 
                 const SizedBox(height: 20),
-                // Export button
-                ElevatedButton(
-                  onPressed: () {
-                    _exportRecord(record);
-                  },
-                  child: const Text('Export Record (CSV)'),
+                // Wrap for file buttons and export button
+                Wrap(
+                  spacing: 8.0, // Horizontal space between buttons
+                  runSpacing: 4.0, // Vertical space between rows of buttons
+                  children: [
+                    for (var schema in recordResponse.schema) ...[
+                      if (schema.type == 'file')
+                        ..._buildFileButtons(record, schema),
+                    ],
+                    // Use the DownloadButton for exporting CSV
+                    DownloadButton(
+                      fileName: 'CSV File',
+                      fileUrl: record.exportUrl,
+                      buttonName: 'Export CSV',
+                      customColor: customColor, // Set your custom color here
+                      onPressed: () async {
+                        if (record.exportUrl.isNotEmpty) {
+                          await FileDownloader.downloadFile(
+                            record.exportUrl,
+                            useBearer: true,
+                          );
+                        } else {
+                          Get.snackbar(
+                            "Info",
+                            "Export URL tidak tersedia.",
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.amber,
+                            colorText: Colors.black,
+                          );
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -102,7 +138,7 @@ class DetailRecordView extends GetView<DetailRecordController> {
 
   /// Build file buttons if field type is 'file' and multiple is true
   List<Widget> _buildFileButtons(RecordDetail record, Schema schema) {
-    var files = record.getField(schema.name, schema);
+    var files = record.fields[schema.name]; // Accessing files from fields
 
     if (files == null || (files is List && files.isEmpty)) {
       return [
@@ -110,22 +146,35 @@ class DetailRecordView extends GetView<DetailRecordController> {
       ];
     }
 
-    // If multiple files exist, return buttons for each file
     List<Widget> buttons = [];
+    Map<String, int> fileCount = {}; // To track counts of each file extension
+
     if (files is List) {
       for (var file in files) {
         String fileName = file.split('/').last;
         String fileExtension = fileName.split('.').last;
 
+        // Initialize the count for this extension if not already done
+        if (!fileCount.containsKey(fileExtension)) {
+          fileCount[fileExtension] = 0;
+        }
+        fileCount[fileExtension] =
+            (fileCount[fileExtension] ?? 0) + 1; // Safely increment the count
+
+        // Create a unique button name
+        String buttonName = fileCount[fileExtension] == 1
+            ? '$fileExtension file'
+            : '${fileExtension}${fileCount[fileExtension]} file';
+
         buttons.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                _downloadFile(file);
-              },
-              child: Text('Download $fileExtension file'),
-            ),
+          DownloadButton(
+            fileName: fileName,
+            fileUrl: file,
+            buttonName: buttonName,
+            customColor: customColor, // Set your custom color here
+            onPressed: () async {
+              await FileDownloader.downloadFile(file, useBearer: true);
+            },
           ),
         );
       }
@@ -133,75 +182,32 @@ class DetailRecordView extends GetView<DetailRecordController> {
       String fileName = files.split('/').last;
       String fileExtension = fileName.split('.').last;
 
+      // Initialize the count for this extension if not already done
+      if (!fileCount.containsKey(fileExtension)) {
+        fileCount[fileExtension] = 0;
+      }
+      fileCount[fileExtension] =
+          (fileCount[fileExtension] ?? 0) + 1; // Safely increment the count
+
+      // Create a unique button name
+      String buttonName = fileCount[fileExtension] == 1
+          ? '$fileExtension '
+          : '${fileExtension}${fileCount[fileExtension]}';
+
       buttons.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              _downloadFile(files);
-            },
-            child: Text('Download $fileExtension file'),
-          ),
+        DownloadButton(
+          fileName: fileName,
+          fileUrl: files,
+          buttonName: buttonName,
+          customColor: customColor, // Set your custom color here
+          onPressed: () async {
+            await FileDownloader.downloadFile(files, useBearer: true);
+          },
         ),
       );
     }
 
-    // Wrap the buttons inside a Wrap widget for better layout
-    return [
-      Wrap(
-        spacing: 8.0, // Horizontal space between buttons
-        runSpacing: 4.0, // Vertical space between rows of buttons
-        children: buttons,
-      ),
-    ];
-  }
-
-  /// Function to download file
-  Future<void> _downloadFile(String fileUrl) async {
-    try {
-      // Call the download method from your HttpService or FlutterDownloader
-      print("Downloading file: $fileUrl");
-      // You can use your existing logic to download the file
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to download file: $e",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
-  }
-
-  /// Function to export the record as a CSV file
-  Future<void> _exportRecord(RecordDetail record) async {
-    try {
-      // Here you can define the logic to export the record to a CSV file.
-      // For example, you could call a method in your service to fetch the export URL.
-      String exportUrl = record.exportUrl; // Assuming exportUrl is available
-
-      if (exportUrl.isNotEmpty) {
-        // Initiate download or export logic (e.g., using FlutterDownloader or custom logic)
-        print("Exporting record to: $exportUrl");
-        _downloadFile(exportUrl); // Example method to download the file
-      } else {
-        Get.snackbar(
-          "Error",
-          "Export URL is not available.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to export record: $e",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      print("Error exporting record: $e");
-    }
+    // Return the buttons
+    return buttons;
   }
 }
