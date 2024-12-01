@@ -14,9 +14,10 @@ class AuthService {
       final response = await HttpService.postRequest('/auth/login', body: body);
 
       if (response.statusCode == 200) {
-        print('Login sukses');
-
         var data = json.decode(response.body);
+        if (data['data']['role'] != "peneliti") {
+          throw Exception('Email tidak terdaftar sebagai peneliti');
+        }
         var token = data['data']['token'];
 
         if (token != null) {

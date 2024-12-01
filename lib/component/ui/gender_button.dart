@@ -24,13 +24,14 @@ class GenderButton extends StatelessWidget {
             isSelected ? Colors.white : customColor, // Adjust icon color
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: customColor, width: 2),
+          side: const BorderSide(color: customColor, width: 1),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       ),
       child: Icon(
         icon,
         size: 28,
+        color: customColor3,
       ),
     );
   }

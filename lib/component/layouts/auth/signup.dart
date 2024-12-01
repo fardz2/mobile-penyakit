@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/modules/login/controllers/login_controller.dart';
 import 'package:heartrate_database_u_i/component/ui/custom_text_field.dart';
@@ -12,6 +13,7 @@ class Signup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Form(
       key: controller.formSignup,
       child: Column(
@@ -21,7 +23,7 @@ class Signup extends StatelessWidget {
             labelText: "Email",
             prefixIcon: const Icon(
               Icons.email,
-              color: Color(0xff53516C),
+              color: customColor3,
             ),
             validator: LoginValidation.email,
           ),
@@ -31,7 +33,7 @@ class Signup extends StatelessWidget {
             labelText: "Name",
             prefixIcon: const Icon(
               Icons.person,
-              color: Color(0xff53516C),
+              color: customColor3,
             ),
             validator: LoginValidation.name,
           ),
@@ -41,9 +43,14 @@ class Signup extends StatelessWidget {
           CustomTextField(
             controller: controller.phoneSignUpController,
             labelText: "Phone Number",
-            prefixIcon: const Icon(
-              Icons.phone,
-              color: Color(0xff53516C),
+            prefixIcon: Container(
+              padding: const EdgeInsets.all(13),
+              child: SvgPicture.asset(
+                "assets/icons/svg/telephone-fill.svg",
+                width: 10,
+                height: 10,
+                color: customColor3,
+              ),
             ),
             isNumeric: true,
             validator: LoginValidation.phoneNumber,
@@ -53,9 +60,14 @@ class Signup extends StatelessWidget {
             return CustomTextField(
               controller: controller.passwordSignUpController,
               labelText: "Password",
-              prefixIcon: Image.asset(
-                "assets/icons/password.png",
-                width: 20,
+              prefixIcon: Container(
+                padding: const EdgeInsets.all(13),
+                child: SvgPicture.asset(
+                  "assets/icons/svg/password.svg",
+                  width: 10,
+                  height: 10,
+                  color: customColor3,
+                ),
               ),
               isPassword: true,
               obscureText: controller.passwordSignUp.value,
@@ -68,9 +80,14 @@ class Signup extends StatelessWidget {
             return CustomTextField(
               controller: controller.confirmPasswordSignUpController,
               labelText: "Konfirmasi Password",
-              prefixIcon: Image.asset(
-                "assets/icons/password.png",
-                width: 20,
+              prefixIcon: Container(
+                padding: const EdgeInsets.all(13),
+                child: SvgPicture.asset(
+                  "assets/icons/svg/password.svg",
+                  width: 10,
+                  height: 10,
+                  color: customColor3,
+                ),
               ),
               isPassword: true,
               obscureText: controller.confirmPassword.value,
@@ -87,9 +104,14 @@ class Signup extends StatelessWidget {
           CustomTextField(
             controller: controller.institusiSignUpController,
             labelText: "Institusi",
-            prefixIcon: Image.asset(
-              "assets/icons/password.png",
-              width: 20,
+            prefixIcon: Container(
+              padding: const EdgeInsets.all(13),
+              child: SvgPicture.asset(
+                "assets/icons/svg/building.svg",
+                width: 10,
+                height: 10,
+                color: customColor3,
+              ),
             ),
             validator: LoginValidation.instiusi,
           ),
@@ -97,30 +119,61 @@ class Signup extends StatelessWidget {
           CustomTextField(
             controller: controller.tujuanPermohonanSignUpController,
             labelText: "Tujuan Permohonan",
-            prefixIcon: Image.asset(
-              "assets/icons/password.png",
-              width: 20,
+            prefixIcon: Container(
+              padding: const EdgeInsets.all(13),
+              child: SvgPicture.asset(
+                "assets/icons/svg/file-earmark-check-fill.svg",
+                width: 10,
+                height: 10,
+                color: customColor3,
+              ),
             ),
             validator: LoginValidation.tujuanPermohonan,
           ),
           const SizedBox(height: 15),
           SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: controller.signUp,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: customColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 50,
-                  vertical: 15,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child:
-                  const Text("Sign Up", style: TextStyle(color: Colors.white)),
-            ),
+            width: width,
+            child: Obx(() {
+              return ElevatedButton(
+                  onPressed: () {
+                    if (controller.isLoading.value) {
+                      return; // Prevent multiple taps
+                    }
+                    controller.login(); // Call the login method
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: customColor,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 50,
+                      vertical: 15,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize
+                        .min, // Adjust the row size to fit its children
+                    children: [
+                      if (controller
+                          .isLoading.value) // Show loading indicator if loading
+                        const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors
+                                .white, // Set the color of the loading indicator
+                            strokeWidth: 2, // Adjust the stroke width if needed
+                          ),
+                        ),
+                      const SizedBox(
+                          width:
+                              8), // Spacing between the loading indicator and text
+                      const Text("Login",
+                          style: TextStyle(color: Colors.white)),
+                    ],
+                  ));
+            }),
           ),
         ],
       ),

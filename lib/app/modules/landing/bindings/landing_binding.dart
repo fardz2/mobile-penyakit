@@ -17,6 +17,6 @@ class LandingBinding extends Bindings {
     Get.lazyPut<PenyakitController>(
       () => PenyakitController(),
     );
-    Get.lazyPut<ProfileController>(() => ProfileController());
+    Get.put<ProfileController>(ProfileController(), permanent: true);
   }
 }

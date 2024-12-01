@@ -8,7 +8,7 @@ import '../../../routes/app_pages.dart';
 import '../controllers/opening_controller.dart';
 
 class OpeningView extends GetView<OpeningController> {
-  const OpeningView({Key? key}) : super(key: key);
+  const OpeningView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,25 +20,28 @@ class OpeningView extends GetView<OpeningController> {
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(height: 30),
-              Center(
-                child: Image.asset("assets/images/doctor_streamline.png"),
-              ),
-              const SizedBox(height: 30),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    "Welcome",
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: customColor),
+                children: [
+                  Center(
+                    child: Image.asset("assets/images/doctor_streamline.png"),
                   ),
-                  Text(
-                    "System for uploading and downloading heart rate data from two databases, one for arrhythmia and one for myocardial infarction. The downloaded files can be in graph form and CSV if selected.",
+                  const SizedBox(height: 30),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Welcome",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: customColor),
+                      ),
+                      Text(
+                        "System for uploading and downloading heart rate data from two databases, one for arrhythmia and one for myocardial infarction. The downloaded files can be in graph form and CSV if selected.",
+                      ),
+                    ],
                   ),
                 ],
               ),

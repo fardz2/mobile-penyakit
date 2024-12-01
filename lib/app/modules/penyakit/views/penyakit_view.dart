@@ -42,72 +42,82 @@ class PenyakitView extends GetView<PenyakitController> {
               child: Column(
                 children: [
                   // Bagian header dengan ClipPath
-                  Stack(
-                    children: [
-                      ClipPath(
-                        clipper: HeaderClipper(),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: customColor2, // Warna tetap sama
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ProfileWidget(),
-                                  ],
-                                ),
-                                const SizedBox(height: 30),
-                                const Text(
-                                  "Pilih penyakit dengan\ndata berkualitas",
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                  Obx(() {
+                    return controller.landingController.isLogin.value
+                        ? Stack(
+                            children: [
+                              ClipPath(
+                                clipper: HeaderClipper(),
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    color: customColor2, // Warna tetap sama
                                   ),
-                                ),
-                                const SizedBox(height: 80), // Adjusted spacing
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Obx(() {
-                        return controller.landingController.isLogin.value &&
-                                controller.errorMessage.value.isEmpty
-                            ? Positioned(
-                                top:
-                                    200, // Adjust this value to position the search bar
-                                left: 20,
-                                right: 20,
-                                child: TextField(
-                                  controller: controller.searchController,
-                                  focusNode: controller.searchFocusNode,
-                                  onChanged: (value) {
-                                    controller.fetchPenyakit(
-                                        searchQuery: value);
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: 'Cari penyakit...',
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(10.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            ProfileWidget(),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 30),
+                                        const Text(
+                                          "Pilih penyakit dengan\ndata berkualitas",
+                                          style: TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                            height: 80), // Adjusted spacing
+                                      ],
                                     ),
-                                    prefixIcon: const Icon(Icons.search),
                                   ),
                                 ),
-                              )
-                            : const SizedBox();
-                      }),
-                    ],
-                  ),
+                              ),
+                              Obx(() {
+                                return controller
+                                            .landingController.isLogin.value &&
+                                        controller.errorMessage.value.isEmpty
+                                    ? Positioned(
+                                        top:
+                                            200, // Adjust this value to position the search bar
+                                        left: 20,
+                                        right: 20,
+                                        child: TextField(
+                                          controller:
+                                              controller.searchController,
+                                          focusNode: controller.searchFocusNode,
+                                          onChanged: (value) {
+                                            controller.fetchPenyakit(
+                                                searchQuery: value);
+                                          },
+                                          decoration: InputDecoration(
+                                            hintText: 'Cari penyakit...',
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide.none,
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                            prefixIcon:
+                                                const Icon(Icons.search),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox();
+                              }),
+                            ],
+                          )
+                        : const SizedBox();
+                  }),
                   // Main Content
                   Obx(() {
                     if (controller.landingController.isLogin.value == false) {
@@ -203,7 +213,7 @@ class PenyakitView extends GetView<PenyakitController> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 300),
           const Text(
             "Belum login, silahkan login terlebih dahulu.",
             textAlign: TextAlign.center,
