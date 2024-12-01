@@ -9,6 +9,7 @@ class DetailRecordController extends GetxController {
 
   final String penyakitId = Get.arguments['penyakit_id'].toString();
   final String recordId = Get.arguments['record_id'].toString();
+  final String name = Get.arguments['name'].toString();
 
   @override
   void onInit() {

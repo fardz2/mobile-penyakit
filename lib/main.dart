@@ -25,6 +25,7 @@ void main() async {
   runApp(
     GetMaterialApp(
       title: "Application",
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           fontFamily: GoogleFonts.onest().fontFamily,
           scaffoldBackgroundColor: Colors.white),

@@ -48,6 +48,7 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
             },
             child: CustomScrollView(
               controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 // Header untuk detail penyakit
                 SliverToBoxAdapter(
@@ -56,7 +57,9 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        DownloadHeaderWidget(),
+                        DownloadHeaderWidget(
+                          name: controller.penyakitDetail.value!.name,
+                        ),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,6 +153,18 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
                           }
                         }
 
+                        // Cek jika semua data masih "Tidak tersedia"
+                        if (name == "Tidak tersedia" &&
+                            jenis == "Tidak tersedia" &&
+                            tanggal == "Tidak tersedia" &&
+                            waktu == "Tidak tersedia") {
+                          // Buat data dummy
+                          name = "Record ${index + 1}";
+                          jenis = "";
+                          tanggal = ""; // Contoh tanggal
+                          waktu = ""; // Contoh waktu
+                        }
+
                         // Menampilkan data dengan ListPenyakit
                         return Padding(
                           padding: const EdgeInsets.symmetric(
@@ -159,6 +174,7 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
                               Get.toNamed(Routes.DETAIL_RECORD, arguments: {
                                 "penyakit_id": controller.penyakitId,
                                 "record_id": penyakitItem.id,
+                                "name": controller.penyakitDetail.value!.name,
                               });
                             },
                             child: ListPenyakit(

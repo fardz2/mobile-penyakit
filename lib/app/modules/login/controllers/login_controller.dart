@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:heartrate_database_u_i/app/modules/home/controllers/home_controller.dart';
 import 'package:heartrate_database_u_i/app/modules/landing/controllers/landing_controller.dart';
 import 'package:heartrate_database_u_i/app/modules/penyakit/controllers/penyakit_controller.dart';
+import 'package:heartrate_database_u_i/app/modules/profile/controllers/profile_controller.dart';
 
 import 'package:heartrate_database_u_i/utils/api/auth/AuthService.dart';
 
@@ -26,12 +28,16 @@ class LoginController extends GetxController {
   final passwordLogin = true.obs;
   final passwordSignUp = true.obs;
   final confirmPassword = true.obs;
+  final isLoading = false.obs;
   final gender = ''.obs;
   final LandingController landingController = Get.find();
   final PenyakitController penyakitController = Get.find();
+  final ProfileController profileController = Get.find();
+  final HomeController homeController = Get.find();
 
   void login() async {
     if (formLogin.currentState!.validate()) {
+      isLoading.value = true;
       try {
         await AuthService().login(
           emailLoginController.text,
@@ -40,6 +46,8 @@ class LoginController extends GetxController {
         landingController.setLogin();
         penyakitController.errorMessage.value = '';
         penyakitController.fetchPenyakit();
+        profileController.loadProfile();
+        homeController.fetchPenyakit();
 
         Get.back();
         Get.snackbar('Success Login', 'You have successfully Logged in',
@@ -53,6 +61,8 @@ class LoginController extends GetxController {
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.red,
             colorText: Colors.white);
+      } finally {
+        isLoading.value = false;
       }
     }
   }
@@ -60,6 +70,7 @@ class LoginController extends GetxController {
   void signUp() async {
     if (formSignup.currentState!.validate()) {
       isLoginSelected.value = false;
+      isLoading.value = true;
       try {
         await AuthService().signUp(
           email: emailSignUpController.text,
@@ -84,8 +95,9 @@ class LoginController extends GetxController {
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.red,
             colorText: Colors.white);
+      } finally {
+        isLoading.value = false;
       }
-      print(dotenv.env['API_URL']);
     }
   }
 

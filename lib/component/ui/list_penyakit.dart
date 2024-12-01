@@ -8,12 +8,13 @@ class ListPenyakit extends StatelessWidget {
   final String tanggal;
   final String waktu;
 
-  const ListPenyakit(
-      {super.key,
-      required this.name,
-      required this.jenis,
-      required this.tanggal,
-      required this.waktu});
+  const ListPenyakit({
+    super.key,
+    required this.name,
+    required this.jenis,
+    required this.tanggal,
+    required this.waktu,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +33,8 @@ class ListPenyakit extends StatelessWidget {
         ],
       ),
       height: 70,
+      width: double
+          .infinity, // This makes the container take the full width of its parent
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -59,48 +62,64 @@ class ListPenyakit extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Use Flexible to allow text to fit within available space
-                    Flexible(
+                    // Display the name with ellipsis in a fixed-width container
+                    SizedBox(
+                      width: 75, // Fixed width for name
                       child: Text(
                         name,
                         style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
+                          fontWeight:
+                              FontWeight.bold, // Optional: make name bold
                         ),
+                        maxLines: 1, // Limit to 1 line
                       ),
                     ),
-                    Flexible(
-                      child: Text(
-                        "$jenis",
-                        style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
+                    // Only show jenis if it's not empty in a fixed-width container
+                    if (jenis.isNotEmpty)
+                      SizedBox(
+                        width: 100, // Fixed width for jenis
+                        child: Text(
+                          jenis,
+                          style: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          maxLines: 1, // Limit to 1 line
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
             ],
           ),
+          // Only show tanggal and waktu if they are not empty
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Flexible(
-                child: Text(
-                  tanggal,
-                  style: const TextStyle(
-                    overflow: TextOverflow.ellipsis,
+              if (tanggal.isNotEmpty)
+                SizedBox(
+                  width: 80, // Fixed width for tanggal
+                  child: Text(
+                    tanggal,
+                    style: const TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    maxLines: 1, // Limit to 1 line
                   ),
                 ),
-              ),
-              Flexible(
-                child: Text(
-                  waktu,
-                  style: const TextStyle(
-                    overflow: TextOverflow.ellipsis,
+              if (waktu.isNotEmpty)
+                SizedBox(
+                  width: 65, // Fixed width for waktu
+                  child: Text(
+                    waktu,
+                    style: const TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    maxLines: 1, // Limit to 1 line
                   ),
                 ),
-              ),
             ],
           ),
         ],

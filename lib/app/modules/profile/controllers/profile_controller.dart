@@ -6,9 +6,14 @@ import 'package:heartrate_database_u_i/utils/storage_service.dart';
 import 'package:heartrate_database_u_i/app/models/user/User.dart';
 
 class ProfileController extends GetxController {
-  final user =
-      User(id: 0, name: '', email: '', institution: '', gender: '', phone: '')
-          .obs;
+  final user = User(
+    id: 0,
+    name: '',
+    email: '',
+    institution: '',
+    gender: '',
+    phone: '',
+  ).obs;
   final isLoading = false.obs;
   final LandingController landingController = Get.find();
 
@@ -16,10 +21,10 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadProfile();
+    loadProfile();
   }
 
-  Future<void> _loadProfile() async {
+  Future<void> loadProfile() async {
     isLoading.value = true;
     try {
       final fetchedUser = await AuthService().getProfile();

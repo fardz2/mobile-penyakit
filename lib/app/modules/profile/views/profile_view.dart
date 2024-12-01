@@ -30,7 +30,7 @@ class ProfileView extends GetView<ProfileController> {
                 child: CircleAvatar(
                   radius: 50,
                   backgroundImage: AssetImage(
-                    "assets/images/doctor_streamline.png", // Gambar default
+                    "assets/images/doctor_streamline.png",
                   ),
                 ),
               ),

@@ -22,7 +22,7 @@ class PenyakitController extends GetxController {
       {bool loadMore = false, String searchQuery = ""}) async {
     if (!hasMorePages.value && loadMore)
       return; // Hentikan jika tidak ada lagi halaman
-
+    errorMessage.value = '';
     try {
       if (loadMore) {
         isLoadMore(true);

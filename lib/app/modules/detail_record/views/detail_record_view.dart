@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/models/disease/record/record_response.dart';
-import 'package:heartrate_database_u_i/component/ui/confirm_dialog.dart';
+
 import 'package:heartrate_database_u_i/component/ui/download_button.dart';
 import 'package:heartrate_database_u_i/component/ui/download_header_widget.dart';
 import 'package:heartrate_database_u_i/utils/colors.dart';
@@ -52,7 +52,9 @@ class DetailRecordView extends GetView<DetailRecordController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DownloadHeaderWidget(),
+                DownloadHeaderWidget(
+                  name: controller.name,
+                ),
                 const SizedBox(height: 20),
                 Text(
                   'Record ${record.id}',
@@ -113,6 +115,7 @@ class DetailRecordView extends GetView<DetailRecordController> {
                         if (record.exportUrl.isNotEmpty) {
                           await FileDownloader.downloadFile(
                             record.exportUrl,
+                            controller.name + record.id.toString(),
                             useBearer: true,
                           );
                         } else {
@@ -164,7 +167,7 @@ class DetailRecordView extends GetView<DetailRecordController> {
         // Create a unique button name
         String buttonName = fileCount[fileExtension] == 1
             ? '$fileExtension file'
-            : '${fileExtension}${fileCount[fileExtension]} file';
+            : '$fileExtension${fileCount[fileExtension]} file';
 
         buttons.add(
           DownloadButton(
@@ -173,7 +176,9 @@ class DetailRecordView extends GetView<DetailRecordController> {
             buttonName: buttonName,
             customColor: customColor, // Set your custom color here
             onPressed: () async {
-              await FileDownloader.downloadFile(file, useBearer: true);
+              await FileDownloader.downloadFile(
+                  file, controller.name + controller.recordId,
+                  useBearer: false);
             },
           ),
         );
@@ -201,7 +206,9 @@ class DetailRecordView extends GetView<DetailRecordController> {
           buttonName: buttonName,
           customColor: customColor, // Set your custom color here
           onPressed: () async {
-            await FileDownloader.downloadFile(files, useBearer: true);
+            await FileDownloader.downloadFile(
+                files, controller.name + controller.recordId,
+                useBearer: true);
           },
         ),
       );

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
 import 'package:heartrate_database_u_i/component/ui/penyakit_widget.dart';
 import 'package:heartrate_database_u_i/component/ui/profile_widget.dart';
+import 'package:heartrate_database_u_i/utils/colors.dart';
 import '../controllers/penyakit_controller.dart';
 
 class PenyakitView extends GetView<PenyakitController> {
@@ -28,119 +29,148 @@ class PenyakitView extends GetView<PenyakitController> {
       },
       child: Scaffold(
         body: SafeArea(
-          child: Obx(() {
-            if (controller.landingController.isLogin.value == false) {
-              return _Login();
-            }
+          child: RefreshIndicator(
+            onRefresh: () async {
+              controller.searchFocusNode.unfocus();
 
-            return RefreshIndicator(
-              onRefresh: () async {
-                controller.searchFocusNode
-                    .unfocus(); // Tutup keyboard saat refresh
-                await controller.fetchPenyakit(
-                    searchQuery: controller.searchController.text);
-              },
-              child: CustomScrollView(
-                controller: scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  // Profile Section
-                  SliverPadding(
-                    padding: const EdgeInsets.all(20),
-                    sliver: SliverToBoxAdapter(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              await controller.fetchPenyakit(
+                  searchQuery: controller.searchController.text);
+            },
+            child: SingleChildScrollView(
+              controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  // Bagian header dengan ClipPath
+                  Stack(
+                    children: [
+                      ClipPath(
+                        clipper: HeaderClipper(),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: customColor2, // Warna tetap sama
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ProfileWidget(),
+                                  ],
+                                ),
+                                const SizedBox(height: 30),
+                                const Text(
+                                  "Pilih penyakit dengan\ndata berkualitas",
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 80), // Adjusted spacing
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Obx(() {
+                        return controller.landingController.isLogin.value &&
+                                controller.errorMessage.value.isEmpty
+                            ? Positioned(
+                                top:
+                                    200, // Adjust this value to position the search bar
+                                left: 20,
+                                right: 20,
+                                child: TextField(
+                                  controller: controller.searchController,
+                                  focusNode: controller.searchFocusNode,
+                                  onChanged: (value) {
+                                    controller.fetchPenyakit(
+                                        searchQuery: value);
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: 'Cari penyakit...',
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    prefixIcon: const Icon(Icons.search),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox();
+                      }),
+                    ],
+                  ),
+                  // Main Content
+                  Obx(() {
+                    if (controller.landingController.isLogin.value == false) {
+                      return _Login();
+                    }
+
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        controller.searchFocusNode
+                            .unfocus(); // Tutup keyboard saat refresh
+                        await controller.fetchPenyakit(
+                            searchQuery: controller.searchController.text);
+                      },
+                      child: Column(
                         children: [
-                          ProfileWidget(),
+                          // Error or Empty State
+                          if (controller.errorMessage.value.isNotEmpty)
+                            _buildErrorState()
+                          else if (controller.penyakitList.isEmpty)
+                            _buildEmptyState()
+                          else ...[
+                            // List of Diseases
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 10, left: 20, right: 20, bottom: 100),
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: controller.penyakitList.length +
+                                    (controller.hasMorePages.value ? 1 : 0),
+                                itemBuilder: (context, index) {
+                                  if (index < controller.penyakitList.length) {
+                                    var penyakitData =
+                                        controller.penyakitList[index];
+                                    return PenyakitCard(
+                                      image: penyakitData.coverPage,
+                                      penyakit: penyakitData.name,
+                                      record: penyakitData.diseaseRecordsCount,
+                                      updated: penyakitData.updatedAt,
+                                      onTap: () {
+                                        controller.searchFocusNode.unfocus();
+                                        Get.toNamed(
+                                          Routes.DETAIL_PENYAKIT,
+                                          arguments: penyakitData.id,
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
                         ],
                       ),
-                    ),
-                  ),
-
-                  // Title Section
-                  const SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    sliver: SliverToBoxAdapter(
-                      child: Text(
-                        "Pilih penyakit \nyang anda inginkan",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Search Section
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10.0),
-                    sliver: SliverToBoxAdapter(
-                      child: TextField(
-                        controller: controller.searchController,
-                        focusNode: controller.searchFocusNode,
-                        onChanged: (value) {
-                          controller.fetchPenyakit(searchQuery: value);
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Cari Penyakit...',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          prefixIcon: const Icon(Icons.search),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Error or Empty State
-                  if (controller.errorMessage.value.isNotEmpty)
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: _buildErrorState(),
-                    )
-                  else if (controller.penyakitList.isEmpty)
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: _buildEmptyState(),
-                    )
-                  else
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 10.0),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            if (index < controller.penyakitList.length) {
-                              var penyakitData = controller.penyakitList[index];
-                              return PenyakitCard(
-                                image: penyakitData.coverPage,
-                                penyakit: penyakitData.name,
-                                record: penyakitData.diseaseRecordsCount,
-                                updated: penyakitData.updatedAt,
-                                onTap: () {
-                                  controller.searchFocusNode.unfocus();
-                                  Get.toNamed(
-                                    Routes.DETAIL_PENYAKIT,
-                                    arguments: penyakitData.id,
-                                  );
-                                },
-                              );
-                            } else {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                          },
-                          childCount: controller.penyakitList.length +
-                              (controller.hasMorePages.value ? 1 : 0),
-                        ),
-                      ),
-                    ),
+                    );
+                  }),
                 ],
               ),
-            );
-          }),
+            ),
+          ),
         ),
       ),
     );
@@ -156,44 +186,16 @@ class PenyakitView extends GetView<PenyakitController> {
           Text(
             controller.errorMessage.value,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 18, color: Colors.black54),
+            style: const TextStyle(fontSize: 18, color: Colors.black),
           ),
           const SizedBox(height: 20),
-          _buildRetryButton(),
         ],
       ),
     );
   }
 
   Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 20),
-          const Text(
-            "Tidak ada data penyakit yang tersedia.",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18, color: Colors.black54),
-          ),
-          const SizedBox(height: 20),
-          _buildRetryButton(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRetryButton() {
-    return ElevatedButton(
-      onPressed: () {
-        controller.fetchPenyakit(); // Retry fetching data
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-      ),
-      child: const Text("Muat Ulang"),
-    );
+    return const Center(child: CircularProgressIndicator());
   }
 
   Widget _Login() {
@@ -213,13 +215,39 @@ class PenyakitView extends GetView<PenyakitController> {
               Get.toNamed(Routes.LOGIN);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: customColor3,
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
             ),
-            child: const Text("Login"),
+            child: const Text(
+              "Login",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
     );
+  }
+}
+
+// Clipper untuk bentuk khusus Container
+class HeaderClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(0, size.height - 20); // Garis ke bawah kiri
+    path.quadraticBezierTo(
+      size.width / 2, // Kontrol titik X
+      size.height - 100, // Kontrol titik Y
+      size.width, // Titik akhir X
+      size.height - 20, // Titik akhir Y
+    );
+    path.lineTo(size.width, 0); // Garis ke atas kanan
+    path.close(); // Menutup path
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
   }
 }

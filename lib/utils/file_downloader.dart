@@ -24,7 +24,8 @@ class FileDownloader {
   }
 
   /// Function to download a file using FlutterDownloader
-  static Future<void> downloadFile(String url, {bool useBearer = false}) async {
+  static Future<void> downloadFile(String url, String? name,
+      {bool useBearer = false}) async {
     try {
       // Check and request storage permission
       var permissionStatus = await Permission.storage.request();
@@ -40,15 +41,15 @@ class FileDownloader {
         throw Exception("Failed to get storage directory.");
       }
 
-      // Extract the file extension from the URL
-      String fileExtension = path.extension(url); // Get the file extension
-      if (fileExtension.isEmpty) {
-        fileExtension = '.csv'; // Default to .csv if no extension found
-      }
+      String fileName = path.basename(url);
+      String fileExtension = path.extension(fileName);
 
-      // Generate a random file name with the extracted extension
-      var uuid = Uuid();
-      final randomFileName = '${uuid.v4()}$fileExtension';
+      String randomFileName;
+      if (fileExtension.isNotEmpty) {
+        randomFileName = fileName; // Use the existing filename
+      } else {
+        randomFileName = '$name.csv'; // Default to .csv if no extension found
+      }
 
       final savePath = '$directoryPath/$randomFileName';
 
@@ -67,7 +68,7 @@ class FileDownloader {
 
       Get.snackbar(
         "Success",
-        "File is being downloaded: $randomFileName",
+        "File berhasil di download",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,

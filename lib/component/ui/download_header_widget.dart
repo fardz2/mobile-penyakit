@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/modules/detail_penyakit/controllers/detail_penyakit_controller.dart';
+import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
 import 'package:heartrate_database_u_i/component/ui/button_back.dart';
 import 'package:heartrate_database_u_i/component/ui/confirm_dialog.dart';
 import 'package:heartrate_database_u_i/utils/file_downloader.dart';
 
 class DownloadHeaderWidget extends StatelessWidget {
+  final String name;
   final DetailPenyakitController detailPenyakitController =
       Get.find<DetailPenyakitController>();
 
-  DownloadHeaderWidget({super.key});
+  DownloadHeaderWidget({super.key, required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +46,7 @@ class DownloadHeaderWidget extends StatelessWidget {
                         content: "Apakah Anda yakin ingin mengunduh file ini?",
                         onConfirm: () async {
                           // Proceed with the download
-                          await FileDownloader.downloadFile(exportUrl,
+                          await FileDownloader.downloadFile(exportUrl, name,
                               useBearer: true);
                         },
                       ),
@@ -76,10 +78,15 @@ class DownloadHeaderWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            const CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage(
-                "assets/images/doctor_streamline.png",
+            GestureDetector(
+              onTap: () {
+                Get.toNamed(Routes.PROFILE);
+              },
+              child: const CircleAvatar(
+                radius: 20,
+                backgroundImage: AssetImage(
+                  "assets/images/doctor_streamline.png",
+                ),
               ),
             ),
           ],
