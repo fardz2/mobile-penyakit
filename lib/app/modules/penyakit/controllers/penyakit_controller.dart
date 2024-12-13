@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/models/disease/disease.dart';
 import 'package:heartrate_database_u_i/app/modules/landing/controllers/landing_controller.dart';
+import 'package:heartrate_database_u_i/app/modules/profile/controllers/profile_controller.dart';
 import 'package:heartrate_database_u_i/utils/api/disease/disease_service.dart';
 
 class PenyakitController extends GetxController {
@@ -13,6 +14,7 @@ class PenyakitController extends GetxController {
   final currentPage = 1.obs;
   final hasMorePages = true.obs;
   final LandingController landingController = Get.find();
+  final ProfileController profileController = Get.find();
 
   // Controller dan FocusNode untuk Search
   final searchController = TextEditingController();
@@ -45,7 +47,7 @@ class PenyakitController extends GetxController {
       }).toList();
 
       penyakitList.addAll(newDiseases);
-
+      profileController.loadProfile();
       hasMorePages.value = response.hasMorePages;
       if (response.hasMorePages) {
         currentPage.value +=

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/modules/home/controllers/home_controller.dart';
 import 'package:heartrate_database_u_i/app/modules/landing/controllers/landing_controller.dart';
@@ -7,6 +8,7 @@ import 'package:heartrate_database_u_i/app/modules/penyakit/controllers/penyakit
 import 'package:heartrate_database_u_i/app/modules/profile/controllers/profile_controller.dart';
 
 import 'package:heartrate_database_u_i/utils/api/auth/AuthService.dart';
+import 'package:heartrate_database_u_i/utils/helpers/toast_helper.dart';
 
 class LoginController extends GetxController {
   final formLogin = GlobalKey<FormState>();
@@ -50,17 +52,20 @@ class LoginController extends GetxController {
         homeController.fetchPenyakit();
 
         Get.back();
-        Get.snackbar('Success Login', 'You have successfully Logged in',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white);
-      } catch (e) {
-        print('Terjadi kesalahan saat login: $e');
 
-        Get.snackbar('Error', e.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white);
+        ToastHelper.show(
+          message: "Login Berhasil",
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } catch (e) {
+        ToastHelper.show(
+          message: e.toString(),
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
       } finally {
         isLoading.value = false;
       }
@@ -83,10 +88,13 @@ class LoginController extends GetxController {
           institusi: institusiSignUpController.text,
           tujuanPermohonan: tujuanPermohonanSignUpController.text,
         );
-        Get.snackbar('Success Regiter', 'You have successfully registered',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white);
+
+        ToastHelper.show(
+          message: "SignUp Berhasil",
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
         isLoginSelected.value = true;
       } catch (e) {
         print('Terjadi kesalahan saat registrasi: $e');

@@ -47,91 +47,97 @@ class DetailRecordView extends GetView<DetailRecordController> {
               recordResponse.schema.any((schema) => schema.type != 'file');
 
           // Display the record details
-          return Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                DownloadHeaderWidget(
-                  name: controller.name,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Record ${record.id}',
-                  style: const TextStyle(
-                      fontSize: 36, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
+          return RefreshIndicator(
+            onRefresh: () async {
+              await controller.getDetailRecord();
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DownloadHeaderWidget(
+                    name: controller.name,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Record ${record.id}',
+                    style: const TextStyle(
+                        fontSize: 36, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
 
-                // Only show the card if there are non-file records
-                if (hasNonFileRecords)
-                  Card(
-                    color: Colors.white,
-                    elevation: 3,
-                    shadowColor: Colors.grey.withOpacity(0.5),
-                    child: Container(
-                      width: width,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            for (var schema in recordResponse.schema) ...[
-                              // Check if the schema type is not 'file'
-                              if (schema.type != 'file')
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4.0),
-                                  child: Text(
-                                    // Create the label string
-                                    "${schema.name}\t: ${record.fields[schema.name] ?? 'No Data'}",
-                                    style: const TextStyle(fontSize: 16),
+                  // Only show the card if there are non-file records
+                  if (hasNonFileRecords)
+                    Card(
+                      color: Colors.white,
+                      elevation: 3,
+                      shadowColor: Colors.grey.withOpacity(0.5),
+                      child: Container(
+                        width: width,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (var schema in recordResponse.schema) ...[
+                                // Check if the schema type is not 'file'
+                                if (schema.type != 'file')
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
+                                    child: Text(
+                                      // Create the label string
+                                      "${schema.name}\t: ${record.fields[schema.name] ?? 'No Data'}",
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
                                   ),
-                                ),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                const SizedBox(height: 20),
-                // Wrap for file buttons and export button
-                Wrap(
-                  spacing: 8.0, // Horizontal space between buttons
-                  runSpacing: 4.0, // Vertical space between rows of buttons
-                  children: [
-                    for (var schema in recordResponse.schema) ...[
-                      if (schema.type == 'file')
-                        ..._buildFileButtons(record, schema),
+                  const SizedBox(height: 20),
+                  // Wrap for file buttons and export button
+                  Wrap(
+                    spacing: 8.0, // Horizontal space between buttons
+                    runSpacing: 4.0, // Vertical space between rows of buttons
+                    children: [
+                      for (var schema in recordResponse.schema) ...[
+                        if (schema.type == 'file')
+                          ..._buildFileButtons(record, schema),
+                      ],
+                      // Use the DownloadButton for exporting CSV
+                      DownloadButton(
+                        fileName: 'CSV File',
+                        fileUrl: record.exportUrl,
+                        buttonName: 'Export CSV',
+                        customColor: customColor, // Set your custom color here
+                        onPressed: () async {
+                          if (record.exportUrl.isNotEmpty) {
+                            await FileDownloader.downloadFile(
+                              record.exportUrl,
+                              controller.name + record.id.toString(),
+                              useBearer: true,
+                            );
+                          } else {
+                            Get.snackbar(
+                              "Info",
+                              "Export URL tidak tersedia.",
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: Colors.amber,
+                              colorText: Colors.black,
+                            );
+                          }
+                        },
+                      ),
                     ],
-                    // Use the DownloadButton for exporting CSV
-                    DownloadButton(
-                      fileName: 'CSV File',
-                      fileUrl: record.exportUrl,
-                      buttonName: 'Export CSV',
-                      customColor: customColor, // Set your custom color here
-                      onPressed: () async {
-                        if (record.exportUrl.isNotEmpty) {
-                          await FileDownloader.downloadFile(
-                            record.exportUrl,
-                            controller.name + record.id.toString(),
-                            useBearer: true,
-                          );
-                        } else {
-                          Get.snackbar(
-                            "Info",
-                            "Export URL tidak tersedia.",
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.amber,
-                            colorText: Colors.black,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           );
         }),

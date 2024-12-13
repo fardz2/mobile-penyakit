@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,6 +27,7 @@ void main() async {
     GetMaterialApp(
       title: "Application",
       debugShowCheckedModeBanner: false,
+      builder: FToastBuilder(),
       theme: ThemeData(
           fontFamily: GoogleFonts.onest().fontFamily,
           scaffoldBackgroundColor: Colors.white),

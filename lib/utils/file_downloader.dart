@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:heartrate_database_u_i/utils/helpers/toast_helper.dart';
 import 'package:heartrate_database_u_i/utils/storage_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
@@ -66,12 +67,11 @@ class FileDownloader {
 
       print("Download task started with ID: $taskId");
 
-      Get.snackbar(
-        "Success",
-        "File berhasil di download",
-        snackPosition: SnackPosition.BOTTOM,
+      ToastHelper.show(
+        message: "File berhasil di download",
         backgroundColor: Colors.green,
-        colorText: Colors.white,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     } catch (e) {
       Get.snackbar(

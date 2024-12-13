@@ -153,6 +153,9 @@ class HomeView extends GetView<HomeController> {
                               ),
                             ),
                             // List of Popular Diseases
+                            const SizedBox(
+                              height: 20,
+                            ),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20),

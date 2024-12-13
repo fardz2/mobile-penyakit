@@ -139,7 +139,7 @@ class Signup extends StatelessWidget {
                     if (controller.isLoading.value) {
                       return; // Prevent multiple taps
                     }
-                    controller.login(); // Call the login method
+                    controller.signUp(); // Call the login method
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: customColor,

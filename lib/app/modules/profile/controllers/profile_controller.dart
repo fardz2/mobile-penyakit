@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/modules/landing/controllers/landing_controller.dart';
 import 'package:heartrate_database_u_i/app/routes/app_pages.dart';
 import 'package:heartrate_database_u_i/utils/api/auth/AuthService.dart';
+import 'package:heartrate_database_u_i/utils/helpers/toast_helper.dart';
 import 'package:heartrate_database_u_i/utils/storage_service.dart';
 import 'package:heartrate_database_u_i/app/models/user/User.dart';
 
@@ -44,10 +46,11 @@ class ProfileController extends GetxController {
   void logout() {
     StorageService.clearToken("auth_token");
 
-    Get.snackbar(
-      'Logout',
-      'Anda telah berhasil logout',
-      snackPosition: SnackPosition.BOTTOM,
+    ToastHelper.show(
+      message: "Logout Berhasil",
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
     Get.offAllNamed(Routes.LANDING);
   }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/models/disease/disease.dart';
 import 'package:heartrate_database_u_i/app/models/disease/record/record_response.dart'; // Import untuk RecordResponse
+import 'package:heartrate_database_u_i/app/modules/profile/controllers/profile_controller.dart';
 import 'package:heartrate_database_u_i/utils/api/disease/disease_service.dart';
 import 'package:heartrate_database_u_i/utils/api/disease/record/disease_record.dart';
 
@@ -10,7 +11,7 @@ class DetailPenyakitController extends GetxController {
   // Variabel untuk menyimpan detail penyakit
   final penyakitDetail = Rx<Disease?>(null); // Detail penyakit
   final recordList = RxList<RecordDetail>([]); // Daftar rekam medis
-
+  final ProfileController profileController = Get.find();
   final schema = Rx<List<Schema>?>(null); // Schema dari API
 
   // State management
@@ -44,6 +45,7 @@ class DetailPenyakitController extends GetxController {
 
       // Ambil data rekam medis setelah detail berhasil
       await fetchRecord(id);
+      profileController.loadProfile();
     } catch (e) {
       hasError.value = true; // Tandai error
       print("Error fetching disease details: $e");

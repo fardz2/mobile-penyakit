@@ -27,13 +27,12 @@ class AuthService {
           throw Exception('Token tidak ditemukan dalam response');
         }
       } else {
-        print(response.body);
-        throw Exception('Login gagal: ${response.statusCode}');
+        var data = json.decode(response.body);
+        throw data['message'];
       }
     } catch (e) {
       // Menangani error lainnya dan melempar exception lebih lanjut
-      print('Terjadi kesalahan: $e');
-      throw Exception('Terjadi kesalahan saat proses login: $e');
+      rethrow;
     }
   }
 
@@ -67,8 +66,8 @@ class AuthService {
       if (response.statusCode == 200) {
         print(response.body);
       } else {
-        print(response.body);
-        throw Exception('Registrasi gagal: ${response.statusCode}');
+        var data = json.decode(response.body);
+        throw data['message'];
       }
     } catch (e) {
       rethrow;

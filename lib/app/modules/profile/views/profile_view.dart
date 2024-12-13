@@ -42,66 +42,74 @@ class ProfileView extends GetView<ProfileController> {
                   }
 
                   final user = controller.user.value;
-                  return ListView(
-                    children: [
-                      ProfileButton(
-                        iconPath: "assets/icons/svg/profile.svg",
-                        label: user.name.isNotEmpty ? user.name : "No Name",
-                        iconBackgroundColor: const Color(0xff554F9B),
-                        backgroundColor: customColor3,
-                      ),
-                      const SizedBox(height: 15),
-                      ProfileButton(
-                        iconPath: "assets/icons/svg/envelope-fill.svg",
-                        label: user.email.isNotEmpty ? user.email : "No Email",
-                        iconBackgroundColor: const Color(0xff554F9B),
-                        backgroundColor: customColor3,
-                      ),
-                      const SizedBox(height: 15),
-                      ProfileButton(
-                        iconPath: "assets/icons/svg/building.svg",
-                        label: user.institution.isNotEmpty
-                            ? user.institution
-                            : "No Institution",
-                        iconBackgroundColor: const Color(0xff554F9B),
-                        backgroundColor: customColor3,
-                      ),
-                      const SizedBox(height: 15),
-                      ProfileButton(
-                        iconPath: "assets/icons/svg/gender-male.svg",
-                        label:
-                            user.gender.isNotEmpty ? user.gender : "No Gender",
-                        iconBackgroundColor: const Color(0xff554F9B),
-                        backgroundColor: customColor3,
-                      ),
-                      const SizedBox(height: 15),
-                      ProfileButton(
-                        iconPath: "assets/icons/svg/telephone-fill.svg",
-                        label: user.phone.isNotEmpty ? user.phone : "No Phone",
-                        iconBackgroundColor: const Color(0xff554F9B),
-                        backgroundColor: customColor3,
-                      ),
-                      const SizedBox(height: 15),
-                      const ProfileButton(
-                        iconPath:
-                            "assets/icons/svg/file-earmark-check-fill.svg",
-                        label:
-                            "Melakukan riset dalam penyakit jantung", // Teks hardcoded
-                        iconBackgroundColor: Color(0xff554F9B),
-                        backgroundColor: customColor3,
-                      ),
-                      const SizedBox(height: 15),
-                      // Logout Button
-                      GestureDetector(
-                        onTap: controller.logout,
-                        child: const ProfileButton(
-                          iconPath: "assets/icons/svg/logout.svg",
-                          label: "Logout",
-                          iconBackgroundColor: Colors.red,
-                          backgroundColor: Colors.red,
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      await controller.loadProfile();
+                    },
+                    child: ListView(
+                      children: [
+                        ProfileButton(
+                          iconPath: "assets/icons/svg/profile.svg",
+                          label: user.name.isNotEmpty ? user.name : "No Name",
+                          iconBackgroundColor: const Color(0xff554F9B),
+                          backgroundColor: customColor3,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 15),
+                        ProfileButton(
+                          iconPath: "assets/icons/svg/envelope-fill.svg",
+                          label:
+                              user.email.isNotEmpty ? user.email : "No Email",
+                          iconBackgroundColor: const Color(0xff554F9B),
+                          backgroundColor: customColor3,
+                        ),
+                        const SizedBox(height: 15),
+                        ProfileButton(
+                          iconPath: "assets/icons/svg/building.svg",
+                          label: user.institution.isNotEmpty
+                              ? user.institution
+                              : "No Institution",
+                          iconBackgroundColor: const Color(0xff554F9B),
+                          backgroundColor: customColor3,
+                        ),
+                        const SizedBox(height: 15),
+                        ProfileButton(
+                          iconPath: "assets/icons/svg/gender-male.svg",
+                          label: user.gender.isNotEmpty
+                              ? user.gender
+                              : "No Gender",
+                          iconBackgroundColor: const Color(0xff554F9B),
+                          backgroundColor: customColor3,
+                        ),
+                        const SizedBox(height: 15),
+                        ProfileButton(
+                          iconPath: "assets/icons/svg/telephone-fill.svg",
+                          label:
+                              user.phone.isNotEmpty ? user.phone : "No Phone",
+                          iconBackgroundColor: const Color(0xff554F9B),
+                          backgroundColor: customColor3,
+                        ),
+                        const SizedBox(height: 15),
+                        const ProfileButton(
+                          iconPath:
+                              "assets/icons/svg/file-earmark-check-fill.svg",
+                          label:
+                              "Melakukan riset dalam penyakit jantung", // Teks hardcoded
+                          iconBackgroundColor: Color(0xff554F9B),
+                          backgroundColor: customColor3,
+                        ),
+                        const SizedBox(height: 15),
+                        // Logout Button
+                        GestureDetector(
+                          onTap: controller.logout,
+                          child: const ProfileButton(
+                            iconPath: "assets/icons/svg/logout.svg",
+                            label: "Logout",
+                            iconBackgroundColor: Colors.red,
+                            backgroundColor: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 }),
               ),

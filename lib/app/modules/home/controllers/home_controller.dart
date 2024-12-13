@@ -1,10 +1,12 @@
 import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/models/disease/disease.dart';
 import 'package:heartrate_database_u_i/app/modules/landing/controllers/landing_controller.dart';
+import 'package:heartrate_database_u_i/app/modules/profile/controllers/profile_controller.dart';
 import 'package:heartrate_database_u_i/utils/api/disease/disease_service.dart';
 
 class HomeController extends GetxController {
   final LandingController landingController = Get.find();
+  final ProfileController profileController = Get.find();
   final penyakitList = <Disease>[].obs;
   final errorMessage = ''.obs;
   final isLoading = false.obs;
@@ -81,6 +83,7 @@ class HomeController extends GetxController {
       // Add the new diseases to the list
       print(newDiseases);
       penyakitList.addAll(newDiseases);
+      profileController.loadProfile();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
