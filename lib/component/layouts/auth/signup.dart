@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:heartrate_database_u_i/app/modules/login/controllers/login_controller.dart';
 import 'package:heartrate_database_u_i/component/ui/custom_text_field.dart';
 import 'package:heartrate_database_u_i/component/ui/gender_group.dart';
-import 'package:heartrate_database_u_i/helpers/login_validation.dart';
+import 'package:heartrate_database_u_i/utils/helpers/login_validation.dart';
 import 'package:heartrate_database_u_i/utils/colors.dart';
 
 class Signup extends StatelessWidget {
