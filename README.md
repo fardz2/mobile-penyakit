@@ -24,5 +24,7 @@ Sebelum menjalankan proyek ini, pastikan Anda telah menginstal:
 
 Untuk menjalankan aplikasi, Anda dapat menggunakan emulator atau perangkat fisik. Pastikan emulator atau perangkat Anda terhubung dan aktif.
 
-1. **Jalankan aplikasi:**
+1. **File env**
+   Buat File .env dan isi dari .env seperti di file .env.example
+2. **Jalankan Aplikasi**
    flutter run
