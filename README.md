@@ -1,16 +1,28 @@
-# heartrate_database_u_i
+# Dashboard Penyakit
 
-A new Flutter project.
+Dashboard Penyakit adalah aplikasi yang memfasilitasi akses data kesehatan bagi peneliti. Aplikasi ini memungkinkan peneliti untuk fokus pada penelitian tanpa harus mengelola data secara manual. Data yang disediakan dikelola oleh instansi terpercaya dan akses yang aman.
 
-## Getting Started
+## Prerequisites
 
-This project is a starting point for a Flutter application.
+Sebelum menjalankan proyek ini, pastikan Anda telah menginstal:
 
-A few resources to get you started if this is your first Flutter project:
+- [Flutter](https://flutter.dev/docs/get-started/install) Flutter sdk >=3.4.3 <4.0.0
+- [Dart](https://dart.dev/get-dart)
+- [Android Studio](https://developer.android.com/studio) atau [Visual Studio Code](https://code.visualstudio.com/)
+- [Xcode](https://developer.apple.com/xcode/) (untuk pengembangan iOS, jika diperlukan)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Instalasi
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. **Clone repositori ini:**
+   git clone https://github.com/fardz2/mobile-penyakit.git
+
+2. **Instal dependensi:**
+   Jalankan perintah berikut untuk menginstal semua dependensi yang diperlukan:
+   flutter pub get
+
+## Menjalankan Aplikasi
+
+Untuk menjalankan aplikasi, Anda dapat menggunakan emulator atau perangkat fisik. Pastikan emulator atau perangkat Anda terhubung dan aktif.
+
+1. **Jalankan aplikasi:**
+   flutter run
