@@ -80,8 +80,6 @@ class HomeController extends GetxController {
         newDiseases.removeRange(4, newDiseases.length); // Keep only the first 4
       }
 
-      // Add the new diseases to the list
-      print(newDiseases);
       penyakitList.addAll(newDiseases);
       profileController.loadProfile();
     } catch (e) {
