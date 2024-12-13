@@ -7,14 +7,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart'; // Import the package for controlling orientation
 import 'app/routes/app_pages.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   await dotenv.load(fileName: ".env");
   await FlutterDownloader.initialize(
       debug: true, ignoreSsl: true // Mengaktifkan debug log
       );
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   // Lock orientation to portrait
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // Portrait mode (upward)
@@ -35,6 +38,7 @@ void main() async {
       getPages: AppPages.routes,
     ),
   );
+  FlutterNativeSplash.remove();
 }
 
 Future<String> checkInitialRoute() async {
