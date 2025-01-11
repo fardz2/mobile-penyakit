@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -12,7 +11,6 @@ class OpeningView extends GetView<OpeningController> {
 
   @override
   Widget build(BuildContext context) {
-    // Mendapatkan controller dan inisialisasi logika di dalam onInit()
     Get.put(OpeningController());
 
     return Scaffold(

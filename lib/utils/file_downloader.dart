@@ -13,7 +13,7 @@ class FileDownloader {
   // Function to set headers for the download request with optional Bearer token
   static Map<String, String> _setHeaders({bool useBearer = false}) {
     final apiKey = dotenv.env['API_KEY'] as String;
-    final headers = {'X-API-KEY': apiKey, 'ngrok-skip-browser-warning': 'true'};
+    final headers = {'X-API-KEY': apiKey};
 
     if (useBearer) {
       final token = StorageService.getToken(

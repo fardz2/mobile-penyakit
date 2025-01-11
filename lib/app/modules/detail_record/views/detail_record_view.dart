@@ -17,12 +17,10 @@ class DetailRecordView extends GetView<DetailRecordController> {
     return Scaffold(
       body: SafeArea(
         child: Obx(() {
-          // Show loading indicator if data is being fetched
           if (controller.isLoading.value) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // Display error message if there is an error
           if (controller.errorMessage.isNotEmpty) {
             return Center(
               child: Text(
@@ -32,7 +30,6 @@ class DetailRecordView extends GetView<DetailRecordController> {
             );
           }
 
-          // Show record details if available
           if (controller.recordDetail.value == null) {
             return const Center(
               child: Text('No record details available.'),
@@ -42,7 +39,6 @@ class DetailRecordView extends GetView<DetailRecordController> {
           final recordResponse = controller.recordDetail.value!;
           final record = recordResponse.records;
 
-          // Check if there are any non-file records
           bool hasNonFileRecords =
               recordResponse.schema.any((schema) => schema.type != 'file');
 

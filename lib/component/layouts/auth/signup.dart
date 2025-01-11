@@ -169,7 +169,7 @@ class Signup extends StatelessWidget {
                       const SizedBox(
                           width:
                               8), // Spacing between the loading indicator and text
-                      const Text("Login",
+                      const Text("Sign Up",
                           style: TextStyle(color: Colors.white)),
                     ],
                   ));

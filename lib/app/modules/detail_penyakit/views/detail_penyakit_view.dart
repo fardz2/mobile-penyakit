@@ -13,7 +13,6 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
   Widget build(BuildContext context) {
     final scrollController = ScrollController();
 
-    // Listener untuk infinite scroll
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
               scrollController.position.maxScrollExtent &&
@@ -26,14 +25,12 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
     return Scaffold(
       body: SafeArea(
         child: Obx(() {
-          // Menangani loading
           if (controller.isLoading.value) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          // Pastikan detail penyakit tidak null
           var penyakit = controller.penyakitDetail.value;
           if (penyakit == null) {
             return const Center(
@@ -41,7 +38,6 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
             );
           }
 
-          // Tampilan utama jika detail penyakit tersedia
           return RefreshIndicator(
             onRefresh: () async {
               await controller.fetchDetailPenyakit(controller.penyakitId);
@@ -50,7 +46,6 @@ class DetailPenyakitView extends GetView<DetailPenyakitController> {
               controller: scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
-                // Header untuk detail penyakit
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.all(20),

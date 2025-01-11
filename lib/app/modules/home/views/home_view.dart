@@ -65,13 +65,12 @@ class HomeView extends GetView<HomeController> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Center(
                     child: Wrap(
-                      spacing: 10, // Horizontal spacing between items
-                      runSpacing: 10, // Vertical spacing between items
+                      spacing: 10,
+                      runSpacing: 10,
                       children: List.generate(controller.about.length, (index) {
                         final item = controller.about[index];
                         return GridItem(
-                          icon: item[
-                              "icon"], // Assuming you have an icon in your data
+                          icon: item["icon"],
                           title: item["label"],
                           content: item["content"],
                           titleContent: item["title"],

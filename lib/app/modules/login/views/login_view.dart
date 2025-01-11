@@ -38,12 +38,11 @@ class LoginView extends GetView<LoginController> {
                     padding: EdgeInsets.only(top: 20, left: 20),
                     child: ButtonBack(),
                   ),
-                  // Responsive SizedBox based on screen height
+
                   SizedBox(
                     height: isLoggedIn
-                        ? MediaQuery.of(context).size.height *
-                            0.38 // 30% of screen height
-                        : 0, // No extra space if not logged in
+                        ? MediaQuery.of(context).size.height * 0.38
+                        : 0,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(20.0),

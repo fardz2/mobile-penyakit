@@ -31,7 +31,6 @@ class AuthService {
         throw data['message'];
       }
     } catch (e) {
-      // Menangani error lainnya dan melempar exception lebih lanjut
       rethrow;
     }
   }
@@ -48,7 +47,6 @@ class AuthService {
     required String tujuanPermohonan,
   }) async {
     try {
-      print(institusi);
       final body = {
         'name': name,
         'email': email,
